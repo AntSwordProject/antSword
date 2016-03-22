@@ -228,7 +228,7 @@ class Files {
       let _Clipboard_num = 0;
       for (let c in self.Clipboard) {
         _Clipboard.push({
-          text: c,
+          text: antSword.noxss(c),
           icon: 'fa fa-' + (c.endsWith('/') ? 'folder-o' : 'file-o'),
           action: ( (source, name) => {
             return () => {
@@ -413,10 +413,10 @@ class Files {
         fsize: parseInt(file['size']),
         data: [
           self.fileIcon(file['name']),
-          file['name'].replace(/\/$/, ''),
-          file['time'],
-          self.fileSize(parseInt(file['size'])),
-          file['attr']
+          antSword.noxss(file['name'].replace(/\/$/, '')),
+          antSword.noxss(file['time']),
+          antSword.noxss(self.fileSize(parseInt(file['size']))),
+          antSword.noxss(file['attr'])
         ]
       });
       _id ++;

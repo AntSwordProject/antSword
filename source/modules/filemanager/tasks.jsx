@@ -48,8 +48,8 @@ class Tasks {
     const hash = String(+new Date() + Math.random()).replace('.', '_');
     this.grid.addRow(
       hash, [
-        name,
-        desc,
+        antSword.noxss(name),
+        antSword.noxss(desc),
         `<div id="filemanager_progress_${hash}">-</div>`,
         new Date().format('yyyy-MM-dd hh:mm:ss'),
         `<div id="filemanager_end_time_${hash}">-</div>`

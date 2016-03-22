@@ -277,8 +277,8 @@ class FileManager {
   renameFile(name) {
     const isDir = name.endsWith('/');
     layer.prompt({
-      value: name.replace(/\/$/, ''),
-      title: `<i class="fa fa-fa fa-font"></i> ${LANG['rename']['title']} (${name})`
+      value: antSword.noxss(name.replace(/\/$/, '')),
+      title: `<i class="fa fa-fa fa-font"></i> ${LANG['rename']['title']} (${antSword.noxss(name)})`
     }, (value, index, elem) => {
       this.files.cell.progressOn();
       this.core.filemanager.rename({
@@ -352,7 +352,7 @@ class FileManager {
   retimeFile(name, oldtime) {
     layer.prompt({
       value: oldtime,
-      title: `<i class="fa fa-clock-o"></i> ${LANG['retime']['title']} (${name})`,
+      title: `<i class="fa fa-clock-o"></i> ${LANG['retime']['title']} (${antSword.noxss(name)})`,
       content: `<input type="text" class="layui-layer-input" onClick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'});" value="${oldtime}">`
     }, (value, i, e) => {
       this.files.cell.progressOn();

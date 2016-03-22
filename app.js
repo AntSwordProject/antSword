@@ -29,12 +29,21 @@ app
     });
     mainWindow.loadURL(`file:\/\/${__dirname}/views/index.html`);
 
+    // 调整部分UI
+    const reloadUI = () => {
+      mainWindow.webContents.executeJavaScript(`
+        setTimeout(() => {
+          antSword.modules.shellmanager.category.cell.setWidth(222);
+        }, 500);
+      `);
+    }
     mainWindow
       .on('closed', () => { mainWindow = null })
-      .on('maximize', mainWindow.webContents.reload)
-      .on('unmaximize', mainWindow.webContents.reload)
-      .on('enter-full-screen', mainWindow.webContents.reload)
-      .on('leave-full-screen', mainWindow.webContents.reload)
+      .on('resize', reloadUI)
+      .on('maximize', reloadUI)
+      .on('unmaximize', reloadUI)
+      .on('enter-full-screen', reloadUI)
+      .on('leave-full-screen', reloadUI);
 
     // 打开调试控制台
     // mainWindow.webContents.openDevTools();

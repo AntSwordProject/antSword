@@ -427,6 +427,9 @@ class PHP {
     let data_arr = [];
     arr.map((_) => {
       let _data = _.split('\t|\t');
+      for (let i = 0; i < _data.length; i ++) {
+      	_data[i] = antSword.noxss(new Buffer(_data[i], "base64").toString());
+      }
       data_arr.push(_data);
     });
     data_arr.pop();

@@ -136,7 +136,7 @@ class Terminal {
         let cache_tag = 'command-' + new Buffer(this.path + cmd).toString('base64');
         let cache_cmd;
         if (cache_cmd = this.cache.get(cache_tag)) {
-          term.echo(cache_cmd);
+          term.echo(antSword.noxss(cache_cmd));
           return term.resume();
         };
         this.core.command.exec({
@@ -165,7 +165,7 @@ class Terminal {
             });
             // output = output.replace(/\n$/, '').replace(/^\n/, '').replace(/^\r/, '').replace(/\r$/, '').;
             if (output.length > 0) {
-              term.echo(output);
+              term.echo(antSword.noxss(output));
               // 保存最大100kb数据
               if (output.length < (1024 * 1024)) {
                 this.cache.set(cache_tag, output);
@@ -198,7 +198,8 @@ class Terminal {
 
   // 生成路径提示
   parsePrompt(user) {
-    return this.isWin ? '[[b;white;]' + this.path.replace(/\//g, '\\') + '> ]' : (user ? ('([[b;#E80000;]' + user + ']:[[;#0F93D2;]') : '[[;0F93D2;]') + this.path + ']) $ ';
+    let ret = this.isWin ? '[[b;white;]' + this.path.replace(/\//g, '\\') + '> ]' : (user ? ('([[b;#E80000;]' + user + ']:[[;#0F93D2;]') : '[[;0F93D2;]') + this.path + ']) $ ';
+    return antSword.noxss(ret);
   }
 
 }
