@@ -3,7 +3,7 @@
 // -------
 // create: 2015/12/20
 // update: 2016/01/20
-// 
+//
 
 'use strict';
 
@@ -31,6 +31,28 @@ antSword['core'] = {};
 let _lang = localStorage.getItem('language') || navigator.language;
 _lang = ['en', 'zh'].indexOf(_lang) === -1 ? 'en' : _lang;
 antSword['language'] = require(`./language/${_lang}`);
+
+// 加载代理
+var _aproxymode = localStorage.getItem('aproxymode') || "noproxy";
+var _aproxyprotocol = localStorage.getItem('aproxyprotocol');
+var _aproxyserver = localStorage.getItem('aproxyserver');
+var _aproxyport = localStorage.getItem('aproxyport');
+var _aproxyusername = localStorage.getItem('aproxyusername');
+var _aproxypassword = localStorage.getItem('aproxypassword');
+
+antSword['aproxymode'] = _aproxymode;
+
+if (_aproxyusername == "" || _aproxyusername == null || _aproxypassword == "" || _aproxypassword == null) {
+  antSword['aproxyauth'] = "";
+}else{
+  antSword['aproxyauth'] = _aproxyusername + ":" + _aproxypassword;
+}
+antSword['aproxyuri'] = _aproxyprotocol + "://" + antSword['aproxyauth']+ "@" + _aproxyserver + ":" + _aproxyport;
+
+ipcRenderer.send('aproxy', {
+  aproxymode: antSword['aproxymode'],
+  aproxyuri: antSword['aproxyuri']
+});
 
 antSword['ipcRenderer'] = ipcRenderer;
 antSword['CacheManager'] = CacheManager;

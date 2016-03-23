@@ -1,6 +1,6 @@
-// 
+//
 // language::en
-// 
+//
 module.exports = {
   toastr: {
     info: 'Info',
@@ -405,6 +405,39 @@ module.exports = {
       toolbar: {
         check: 'Check'
       }
+    }
+  },
+  aproxy: {
+    title: 'Proxy Configuration',
+    toolbar: {
+      save: 'Save',
+      test: 'Test Connection'
+    },
+    form: {
+      label: 'Configuring proxy access to the Internet',
+      mode:{
+        noproxy: 'No Proxy',
+        manualproxy: 'Set the proxy manually'
+      },
+      proxy: {
+        protocol: 'Protocol',
+        server: 'Server',
+        port: 'Port',
+        username: 'Username',
+        password: 'Password',
+        authtip: 'Leave blank if no authentication'
+      }
+    },
+    success: 'Successfully save the Proxy Configuration!',
+    error: 'Failed to save the Proxy Configuration!',
+    confirm: {
+      content: 'Restart the application?',
+      title: 'Proxy Configuration'
+    },
+    prompt:{
+      title: 'Input the target URL',
+      success: 'Successfully connect to the proxy server',
+      error: 'Failed to connect to the proxy server'
     }
   },
   plugin: {

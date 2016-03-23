@@ -1,6 +1,6 @@
 //
 // language::zh
-// 
+//
 module.exports = {
   title: '中国蚁剑',
   toastr: {
@@ -405,6 +405,39 @@ module.exports = {
       title: '检查更新',
       toolbar: {
         check: '检查'
+      }
+    },
+    aproxy: {
+      title: '代理设置',
+      toolbar: {
+        save: '保存',
+        test: '测试连接'
+      },
+      form: {
+        label: '配置访问互联网的代理',
+        mode:{
+          noproxy: '不使用代理',
+          manualproxy: '手动设置代理'
+        },
+        proxy: {
+          protocol: '代理协议',
+          server: '代理服务器',
+          port: '端口',
+          username: '用户名',
+          password: '密码',
+          authtip: '如果无认证方式请留空'
+        }
+      },
+      success: '保存代理设置成功！',
+      error: '保存代理设置失败！',
+      confirm: {
+        content: '重启应用生效，是否重启？',
+        title: '更改代理设置'
+      },
+      prompt:{
+        title: '输入测试的 URL',
+        success: '连接到代理服务器成功',
+        error: '连接到代理服务器失败'
       }
     }
   },

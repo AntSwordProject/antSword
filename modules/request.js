@@ -1,6 +1,6 @@
-// 
+//
 // Superagent发包模块
-// 
+//
 
 'use strict';
 
@@ -10,16 +10,57 @@ const superagent = require('superagent');
 
 const logger = log4js.getLogger('Request');
 
+var aproxymode = "noproxy";
+var aproxyuri = "";
+
 class Request {
 
   constructor(electron) {
     // 监听请求
     const ipcMain = electron.ipcMain;
+
+    // 代理测试
+    ipcMain.on('aproxytest', (event, opts) => {
+      var _superagent = require('superagent');
+      var _aproxyuri = opts['aproxyuri'];
+      logger.debug("[aProxy] Test Proxy - " + _aproxyuri + " - Connect to " + opts['url']);
+      require('superagent-proxy')(superagent);
+      _superagent
+      .get(opts['url'])
+      .proxy(_aproxyuri)
+      .timeout(5000)
+      .end((err, ret) => {
+        if (err) {
+          logger.debug("[aProxy] Test Error");
+          return event.sender.send('aproxytest-error', err);
+        }else{
+          logger.debug("[aProxy] Test Success");
+          return event.sender.send('aproxytest-success', ret);
+        }
+      });
+
+    });
+    // 加载代理设置
+    ipcMain.on('aproxy', (event, opts) => {
+      aproxymode = opts['aproxymode'];
+      aproxyuri = opts['aproxyuri'];
+      logger.debug("[aProxy] Set Proxy Mode - " + (aproxymode == "manualproxy" ? aproxyuri : " noproxy"));
+      if (aproxymode == "noproxy") {
+        superagent.Request.prototype.proxy=function(arg) {
+          return this;
+        };
+      }else{
+        require('superagent-proxy')(superagent);
+      };
+    });
+    // 监听请求
     ipcMain.on('request', (event, opts) => {
+      logger.debug("[aProxy] Connect mode - " + (aproxymode == "manualproxy" ? aproxyuri : " noproxy"));
       logger.debug(opts['url'] + '\n', opts['data']);
       superagent
         .post(opts['url'])
         .set('User-Agent', 'antSword/1.0')
+        .proxy(aproxyuri)
         .type('form')
         .timeout(5000)
         .send(opts['data'])
