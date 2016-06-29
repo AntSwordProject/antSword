@@ -20,12 +20,35 @@ class Base {
     opts['encode'] = opts['encode'] || 'utf8';
     opts['encoder'] = opts['encoder'] || 'default';
     this.__opts__ = opts;
-    // 默认编码器
+
     this['__encoder__'] = {
+      /**
+       * 默认编码器
+       * @param  {String} pwd  连接密码
+       * @param  {Object} data 请求数据
+       * @return {Object}      生成数据
+       */
       default(pwd, data) {
         data[pwd] = data['_'];
         delete data['_'];
         return data;
+      },
+      /**
+       * 随机编码器
+       * @param  {String} pwd  连接密码
+       * @param  {Object} data 请求数据
+       * @return {Object}      生成数据
+       */
+      random(pwd, data) {
+        let _encoders = [];
+        for (let _ in this) {
+          if (_ === 'random') { continue }
+          _encoders.push(_);
+        }
+        let _index = parseInt(Math.random() * _encoders.length);
+        return this[
+          _encoders[_index]
+        ](pwd, data);
       }
     }
   }
