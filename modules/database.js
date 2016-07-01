@@ -1,7 +1,6 @@
 /**
  * Shell数据库管理模块
- * 更新：2016/04/28
- * 作者：蚁逅 <https://github.com/antoor>
+ * 更新：2016/06/28
  */
 
 'use strict';
@@ -10,9 +9,10 @@ const fs = require('fs'),
   dns = require('dns'),
   path = require('path'),
   CONF = require('./config'),
-  logger = require('log4js').getLogger('Database'),
   Datastore = require('nedb'),
   qqwry = require("geoips").info();
+
+var logger;
 
 class Database {
 
@@ -22,6 +22,7 @@ class Database {
    * @return {[type]}          [description]
    */
   constructor(electron) {
+    logger = new electron.Logger('Database');
     this.cursor = new Datastore({
       filename: CONF.dataPath,
       autoload: true
@@ -36,9 +37,11 @@ class Database {
       .on('shell-clear', this.clearShell.bind(this))
       .on('shell-findOne', this.findOneShell.bind(this))
       .on('shell-addDataConf', this.addDataConf.bind(this))
+      .on('shell-editDataConf', this.editDataConf.bind(this))
       .on('shell-delDataConf', this.delDataConf.bind(this))
       .on('shell-getDataConf', this.getDataConf.bind(this))
-      .on('shell-renameCategory', this.renameShellCategory.bind(this));
+      .on('shell-renameCategory', this.renameShellCategory.bind(this))
+      .on('shell-updateHttpConf', this.updateHttpConf.bind(this));
   }
 
   /**
@@ -74,6 +77,36 @@ class Database {
     });
   }
 
+
+  /**
+   * 根据URL解析出IP&&地理位置
+   * @param  {String} url URL地址
+   * @return {Promise}     ip, addr
+   */
+  _url2ip(url) {
+    return new Promise((res, rej) => {
+      // 解析domain
+      const urlArr = url.match(/(\w+):\/\/([\w\.\-]+)[:]?([\d]*)([\s\S]*)/i);
+      // 无效url
+      if (!urlArr || urlArr.length < 3) {
+        return rej('Unable to resolve domain name from URL');
+      }
+      // 获取IP
+      const domain = urlArr[2];
+      dns.lookup(domain, (err, ip) => {
+        if (err) {
+          return rej(err.toString());
+        }
+        // 获取地理位置
+        const _addr = qqwry.searchIP(ip);
+        return res({
+          ip: ip,
+          addr: `${_addr.Country} ${_addr.Area}`
+        });
+      })
+    })
+  }
+
   /**
    * 添加shell数据
    * @param {Object} event ipcMain对象
@@ -81,67 +114,87 @@ class Database {
    */
   addShell(event, opts) {
     logger.info('addShell', opts);
-    // 获取目标IP以及地理位置
-    // 1. 获取域名
-    let parse = opts['url'].match(/(\w+):\/\/([\w\.\-]+)[:]?([\d]*)([\s\S]*)/i);
-    if (!parse || parse.length < 3) { return event.returnValue = 'Unable to resolve domain name from URL' };
-    // 2. 获取域名IP
-    dns.lookup(parse[2], (err, ip) => {
-      if (err) { return event.returnValue = err.toString() };
-      // 3. 查询IP对应物理位置
-      const addr = qqwry.searchIP(ip);
-      // 插入数据库
-      this.cursor.insert({
-        category: opts['category'] || 'default',
-        url: opts['url'],
-        pwd: opts['pwd'],
-        type: opts['type'],
-        ip: ip,
-        addr: `${addr.Country} ${addr.Area}`,
-        encode: opts['encode'],
-        encoder: opts['encoder'],
-        ctime: +new Date,
-        utime: +new Date
-      }, (err, ret) => {
-        event.returnValue = err || ret;
-      });
-    });
+
+    this._url2ip(opts.base['url'])
+      .then((ret) => {
+        this.cursor.insert({
+          category: opts.base['category'] || 'default',
+          url: opts.base['url'],
+          pwd: opts.base['pwd'],
+          type: opts.base['type'],
+          ip: ret['ip'],
+          addr: ret['addr'],
+          encode: opts.base['encode'],
+          encoder: opts.base['encoder'],
+          httpConf: opts.http,
+          otherConf: opts.other,
+          ctime: +new Date,
+          utime: +new Date
+        }, (_err, _ret) => {
+          event.returnValue = _err || _ret;
+        });
+      })
+      .catch((_err) => {
+        event.returnValue = _err;
+      })
   }
 
   /**
    * 编辑shell数据
    * @param  {Object} event ipcMain对象
-   * @param  {Object} opts  数据（url,_id,pwd,type,encode,encoder
+   * @param  {Object} opts  数据（old,new
    * @return {[type]}       [description]
    */
   editShell(event, opts) {
     logger.warn('editShell', opts);
-    // 获取目标IP以及地理位置
-    // 1. 获取域名
-    let parse = opts['url'].match(/(\w+):\/\/([\w\.\-]+)[:]?([\d]*)([\s\S]*)/i);
-    if (!parse || parse.length < 3) { return event.returnValue = 'Unable to resolve domain name from URL' };
-    // 2. 获取域名IP
-    dns.lookup(parse[2], (err, ip) => {
-      if (err) { return event.returnValue = err.toString() };
-      // 3. 查询IP对应物理位置
-      const addr = qqwry.searchIP(ip);
-      // 更新数据库
-      this.cursor.update({
-        _id: opts['_id']
-      }, {
-        $set: {
-          ip: ip,
-          addr: `${addr.Country} ${addr.Area}`,
-          url: opts['url'],
-          pwd: opts['pwd'],
-          type: opts['type'],
-          encode: opts['encode'],
-          encoder: opts['encoder'],
-          utime: +new Date
-        }
-      }, (err, num) => {
-        event.returnValue = err || num;
+
+    const _new = opts.new;
+    const _old = opts.old;
+
+    this._url2ip(_new.base['url'])
+      .then((ret) => {
+        this.cursor.update({
+          _id: _old['_id']
+        }, {
+          $set: {
+            ip: ret['ip'],
+            addr: ret['addr'],
+            url: _new.base['url'],
+            pwd: _new.base['pwd'],
+            type: _new.base['type'],
+            encode: _new.base['encode'],
+            encoder: _new.base['encoder'],
+            httpConf: _new.http,
+            otherConf: _new.other,
+            utime: +new Date
+          }
+        }, (_err, _ret) => {
+          event.returnValue = _err || _ret;
+        })
       })
+      .catch((_err) => {
+        event.returnValue = _err;
+      });
+  }
+
+  /**
+   * 更新httpConf配置信息（包含body&&headers
+   * @param  {[type]} event [description]
+   * @param  {[type]} opt  = {} [description]
+   * @return {[type]}       [description]
+   */
+  updateHttpConf(event, opt = {}) {
+    logger.warn('updateHttpConf', opt);
+
+    this.cursor.update({
+      _id: opt._id
+    }, {
+      $set: {
+        httpConf: opt.conf,
+        utime: +new Date
+      }
+    }, (_err, _ret) => {
+      event.returnValue = _err || _ret;
     });
   }
 
@@ -252,6 +305,34 @@ class Database {
         }
       }, (_err, _ret) => {
         event.returnValue = random_id;
+      });
+    });
+  }
+
+  /**
+   * 修改数据库配置
+   * @param {Object} event ipcMain对象
+   * @param {Object} opts  配置（_id,id,data
+   */
+  editDataConf(event, opts) {
+    logger.info('editDataConf', opts);
+    // 1. 获取原配置列表
+    this.cursor.findOne({
+      _id: opts['_id']
+    }, (err, ret) => {
+      let confs = ret['database'] || {};
+      // 添加到配置
+      confs[opts['id']] = opts['data'];
+      // 更新数据库
+      this.cursor.update({
+        _id: opts['_id']
+      }, {
+        $set: {
+          database: confs,
+          utime: +new Date
+        }
+      }, (_err, _ret) => {
+        event.returnValue = opts['id'];
       });
     });
   }

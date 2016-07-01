@@ -9,8 +9,9 @@
 const fs = require('fs'),
   path = require('path'),
   CONF = require('./config'),
-  logger = require('log4js').getLogger('Cache'),
   Datastore = require('nedb');
+
+var logger;
 
 class Cache {
 
@@ -20,6 +21,7 @@ class Cache {
    * @return {[type]}          [description]
    */
   constructor(electron) {
+    logger = new electron.Logger('Cache');
     electron.ipcMain
       .on('cache-add', this.addCache.bind(this))
       .on('cache-set', this.setCache.bind(this))

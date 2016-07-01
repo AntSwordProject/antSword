@@ -1,118 +1,72 @@
-//
-// 程序更新模块
-//
-/* 更新流程：
-   -------
-  1. 获取远程github上的package.json信息
-  2. 和本地版本进行判断，不一致则提示更新
-  3. 下载用户选择的更新源文件到临时目录`.antSword-{now}`
-  4. 替换程序中的`resources/app.asar`文件
-  5. 提示用户手动重启，关闭应用
-*/
+/**
+ * 中国蚁剑::更新程序
+ * 开写: 2016/05/31
+ * 更新: 2016/06/19
+ * 说明: 从2.0.0起，取消在线更新程序的方式，改为程序启动一分钟后，检测github->release最新的版本更新信息，然后提示手动更新
+ */
 
-'use strict';
-
-const os = require('os'),
-  fs = require('fs'),
-  path = require('path'),
-  unzip = require('extract-zip'),
-  crypto = require('crypto'),
-  nugget = require('nugget'),
-  logger = require('log4js').getLogger('Update'),
-  superagent = require('superagent');
+const config = require('./config');
+const superagent = require('superagent');
 
 class Update {
-
   constructor(electron) {
-    const ipcMain = electron.ipcMain;
-    this.info = {};
-    ipcMain
-      .on('update-check', (event, arg) => {
-        this.check(arg['local_ver'], (hasUpdate, retVal) => {
-          logger.debug('check-result', hasUpdate, retVal);
-          event.sender.send('update-check', {
-            hasUpdate: hasUpdate,
-            retVal: retVal
-          });
-        });
-      })
-      .on('update-download', (event, source) => {
-        logger.debug('update-download', source);
-        const info = this.info['update'];
-        const downloadUrl = info['sources'][source];
-        this.download(downloadUrl, info['md5'], (done, retVal) => {
-          event.sender.send('update-download', {
-            done: done,
-            retVal: retVal
-          });
-        });
-      });
+    this.logger = new electron.Logger('Update');
+    electron.ipcMain.on('check-update', this.checkUpdate.bind(this));
   }
 
-  // 检查是否有更新
-  // 参数{localVer: 本地版本号, callback: 回调函数(是否有更新， 是？更新信息：错误信息)}
-  check(localVer, callback) {
-    logger.debug('check', localVer);
+  /**
+   * 检查更新
+   * 如果有更新，则以通知的方式提示用户手动更新，用户点击跳转到更新页面
+   * @return {[type]} [description]
+   */
+  checkUpdate(event) {
+    this.logger.debug('checkUpdate..');
     superagent
-      .get('https://raw.githubusercontent.com/antoor/antSword/master/package.json')
-      .timeout(9527)
-      .end((err, res) => {
-        if (err) { return callback(false, err.toString()) };
+      .get('https://api.github.com/repos/antoor/antSword/releases/latest')
+      .end((err, ret) => {
         try {
-          const info = JSON.parse(res.text);
-          this.info = info;
-          callback(info['version'] !== localVer, info);
-        } catch (e) {
-          return callback(false, e.toString());
+          let lastInfo = JSON.parse(ret.text);
+          let newVersion = lastInfo['tag_name'];
+          let curVersion = config['package'].version;
+          // 比对版本
+          if (this.CompVersion(curVersion, newVersion)) {
+            this.logger.info('Found a new version', newVersion);
+            event.sender.send('notification-update', {
+              ver: newVersion,
+              url: lastInfo['html_url']
+            });
+          } else {
+            this.logger.warn('No new version.', newVersion, curVersion);
+          }
+        } catch(e) {
+          this.logger.fatal('ERR', e);
         }
       });
   }
 
-  // 下载更新
-  // 参数{downloadUrl: 下载地址, md5: 校验MD5, callback: 回调（成功？(true, null):(false, err)）}
-  download(downloadUrl, md5, callback) {
-    // 创建临时文件
-    const tmpDir = os.tmpDir();
-    const fileName = '.antSword-' + (+new Date);
-    const tmpFileName = path.join(tmpDir, fileName);
-    // 当前目录环境
-    const curDir = path.join(__dirname, '../../');
-    // 开始下载文件
-    nugget(
-      downloadUrl,
-      {
-        target: fileName,
-        dir: tmpDir,
-        resume: true,
-        verbose: true,
-        strictSSL: downloadUrl.startsWith('https')
-      },
-      (err) => {
-        if (err) { return callback(false, err.toString()) };
-        // 校验MD5
-        const _md5 = crypto.createHash('md5').update(fs.readFileSync(tmpFileName)).digest('hex');
-        if (_md5 !== md5) { return callback(false, { type: 'md5', err: _md5 }) };
-        // ZIP解压
-        unzip(tmpFileName, {
-          dir: tmpDir
-        }, (e) => {
-          if (e) { return (callback(false, { type: 'unzip', err: e })) };
-          // 删除旧asar
-          // fs.unlinkSync(path.join(curDir, 'app.asar'));
-          // 移动新asar
-          fs.rename(
-            path.join(tmpDir, 'antSword.update'),
-            path.join(curDir, 'app.asar'),
-            (_e) => {
-              _e ? callback(false, _e.toString()) : callback(true);
-            }
-          );
-        });
-      }
-    );
+  /**
+   * 版本比对
+   * @param {String} curVer 当前版本
+   * @param {String} newVer 新的版本
+   * @return {Boolean}
+   */
+  CompVersion(curVer, newVer) {
+    // 如果版本相同
+    if (curVer === newVer) { return false }
+    let currVerArr = curVer.split(".");
+    let promoteVerArr = newVer.split(".");
+    let len = Math.max(currVerArr.length, promoteVerArr.length);
+    for (let i = 0; i < len; i++) {
+        let proVal = ~~promoteVerArr[i],
+            curVal = ~~currVerArr[i];
+        if (proVal < curVal) {
+            return false;
+        } else if (proVal > curVal) {
+            return true;
+        }
+    }
+    return false;
   }
-
-
 }
 
 module.exports = Update;

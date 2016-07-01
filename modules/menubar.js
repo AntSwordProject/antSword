@@ -4,8 +4,6 @@
 
 'use strict';
 
-const CONF = require('./config');
-
 class Menubar {
 
   constructor(electron, app, mainWindow) {
@@ -35,31 +33,40 @@ class Menubar {
     // 菜单模板
     const template = [
       {
-        // 数据管理
-        label: LANG['shell']['title'],
+        // 主菜单
+        label: LANG['main']['title'],
         submenu: [
           {
-            label: LANG['shell']['add'],
-            accelerator: 'Shift+A',
-            click: event.sender.send.bind(event.sender, 'menubar', 'shell-add')
+            label: LANG['main']['about'],
+            accelerator: 'Shift+CmdOrCtrl+I',
+            click: event.sender.send.bind(event.sender, 'menubar', 'settings-about')
           }, {
-            label: LANG['shell']['search'],
-            accelerator: 'Shift+S',
-            enabled: false
+            label: LANG['main']['language'],
+            accelerator: 'Shift+CmdOrCtrl+L',
+            click: event.sender.send.bind(event.sender, 'menubar', 'settings-language')
           }, {
-            type: 'separator'
-          }, {
-            label: LANG['shell']['import'],
-            enabled: false
-          }, {
-            label: LANG['shell']['dump'],
-            enabled: false
+            label: LANG['main']['aproxy'],
+            accelerator: 'Shift+CmdOrCtrl+A',
+            click: event.sender.send.bind(event.sender, 'menubar', 'settings-aproxy')
           }, {
             type: 'separator'
           }, {
-            label: LANG['shell']['clear'],
-            enabled: false
-          }
+            label: LANG['main']['settings'],
+            accelerator: 'Shift+CmdOrCtrl+S',
+            click: event.sender.send.bind(event.sender, 'menubar', 'settings')
+          }, {
+            type: 'separator'
+          }, {
+            label: LANG['main']['pluginStore'],
+            accelerator: 'Shift+CmdOrCtrl+P',
+            click: event.sender.send.bind(event.sender, 'menubar', 'plugin-store')
+          }, {
+            type: 'separator'
+          }, {
+            label: LANG['main']['quit'],
+            accelerator: 'Command+Q',
+            click: this.app.quit.bind(this.app)
+          },
         ]
       }, {
         // 编辑
@@ -84,6 +91,7 @@ class Menubar {
           }
         ]
       }, {
+        // 窗口
         label: LANG['window']['title'],
         submenu: [
           {
@@ -99,67 +107,28 @@ class Menubar {
             click: event.sender.send.bind(event.sender, 'menubar', 'tabbar-close')
           }
         ]
-      }
-    ];
-    // 调试菜单
-    // if (process.env['npm_package_debug']) {
-    if (CONF['package']['debug']) {
-      template.push({
+      }, {
+        // 调试
         label: LANG['debug']['title'],
         submenu: [
           {
             label: LANG['debug']['restart'],
             accelerator: 'Shift+CmdOrCtrl+R',
-            click: this.mainWindow.webContents.reload.bind(this.mainWindow.webContents)
+            click: () => {
+              // 在有多个窗口的时候，不刷新
+              if (this.electron.BrowserWindow.getAllWindows().length > 1) {
+                return;
+              }
+              this.mainWindow.webContents.reload();//.bind(this.mainWindow.webContents)
+            }
           }, {
             label: LANG['debug']['devtools'],
             accelerator: 'Alt+CmdOrCtrl+J',
             click: this.mainWindow.webContents.toggleDevTools.bind(this.mainWindow.webContents)
           }
         ]
-      });
-    };
-    // 主菜单
-    template.unshift({
-      label: LANG['main']['title'],
-      submenu: [
-        {
-          label: LANG['main']['about'],
-          accelerator: 'Shift+CmdOrCtrl+I',
-          click: event.sender.send.bind(event.sender, 'menubar', 'settings-about')
-        }, {
-          label: LANG['main']['language'],
-          accelerator: 'Shift+CmdOrCtrl+L',
-          click: event.sender.send.bind(event.sender, 'menubar', 'settings-language')
-        }, {
-          label: LANG['main']['aproxy'],
-          accelerator: 'Shift+CmdOrCtrl+A',
-          click: event.sender.send.bind(event.sender, 'menubar', 'settings-aproxy')
-        }, {
-          label: LANG['main']['update'],
-          accelerator: 'Shift+CmdOrCtrl+U',
-          click: event.sender.send.bind(event.sender, 'menubar', 'settings-update')
-        }, {
-          type: 'separator'
-        }, {
-          label: LANG['main']['settings'],
-          accelerator: 'Shift+CmdOrCtrl+S',
-          click: event.sender.send.bind(event.sender, 'menubar', 'settings')
-        }, {
-          type: 'separator'
-        }, {
-          label: LANG['main']['plugin'],
-          accelerator: 'Shift+CmdOrCtrl+P',
-          click: event.sender.send.bind(event.sender, 'menubar', 'plugin')
-        }, {
-          type: 'separator'
-        }, {
-          label: LANG['main']['quit'],
-          accelerator: 'Command+Q',
-          click: this.app.quit.bind(this.app)
-        },
-      ]
-    });
+      }
+    ];
     // 更新菜单栏
     this.Menu.setApplicationMenu(this.Menu.buildFromTemplate(template));
   }

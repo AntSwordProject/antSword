@@ -14,13 +14,26 @@ const fs = require('fs'),
 class Conf {
 
   constructor() {
-    // 获取数据存储目录
-    this.basePath = path.join(
+    // 旧数据存储目录
+    let _oldPath = path.join(
       process.env.HOME || process.env.LOCALAPPPATH || process.cwd() || '.',
-      '.antSword'
+      '.antSword',
+      'shell.db'
     );
-    // 创建.antSword目录
+    // 数据存储目录
+    this.basePath = path.join(
+      process.env.AS_WORKDIR,
+      'antData'
+    )
+    // 初始化目录
     !fs.existsSync(this.basePath) ? fs.mkdirSync(this.basePath) : null;
+    // 旧数据搬迁
+    if (fs.existsSync(_oldPath) && !fs.existsSync(this.dataPath)) {
+      fs.writeFileSync(
+        this.dataPath,
+        fs.readFileSync(_oldPath)
+      )
+    }
   }
 
   /**
@@ -28,7 +41,7 @@ class Conf {
    * @return {String} file-path
    */
   get dataPath() {
-    return path.join(this.basePath, 'shell.db');
+    return path.join(this.basePath, 'db.ant');
   }
 
   /**
@@ -38,6 +51,28 @@ class Conf {
   get cachePath() {
     let _ = path.join(this.basePath, '/cache/');
     // 创建缓存目录
+    !fs.existsSync(_) ? fs.mkdirSync(_) : null;
+    return _;
+  }
+
+  /**
+   * 获取插件目录
+   * - 当前目录为下载的插件保存目录，而并非开发者的插件目录，同时开发者所设置的插件目录也不应为此
+   * @return {String} plug-path
+   */
+  get plugPath() {
+    let _ = path.join(this.basePath, '/plugins/');
+    !fs.existsSync(_) ? fs.mkdirSync(_) : null;
+    return _;
+  }
+
+  /**
+   * 获取临时目录
+   * - 用户存储下载文件等缓存内容
+   * @return {String} temp-path
+   */
+  get tmpPath() {
+    let _ = path.join(this.basePath, '/.temp/');
     !fs.existsSync(_) ? fs.mkdirSync(_) : null;
     return _;
   }

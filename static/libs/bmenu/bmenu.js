@@ -1,4 +1,4 @@
-/* 
+/*
  * Context.js
  * Copyright Jacob Kelley
  * MIT License
@@ -11,7 +11,7 @@
     // 加载CSS
     // $('head').append('<link href="/js/libs/bmenu/bmenu.css" rel="stylesheet">');
     var context = context || (function () {
-        
+
         var options = {
             fadeSpeed: 100,
             filter: function ($obj) {
@@ -23,9 +23,9 @@
         };
 
         function initialize(opts) {
-            
+
             options = $.extend({}, options, opts);
-            
+
             $(document).on('click', 'html', function () {
                 // $('._dropdown-context').fadeOut(options.fadeSpeed, function(){
                 //     $('._dropdown-context').css({display:''}).find('.drop-left').removeClass('drop-left');
@@ -48,7 +48,7 @@
                     $sub.addClass('drop-left');
                 }
             });
-            
+
         }
 
         // 更新设置
@@ -120,16 +120,16 @@
         }
 
         function addContext(selector, data, event) {
-            
+
             var d = new Date(),
                 id = selector ? d.getTime() : 'none',
                 $menu = buildMenu(data, id);
             $('#dropdown-none').remove();
             $('body').append($menu);
-            
+
             function show(e) {
                 $('._dropdown-context:not(._dropdown-context-sub)').hide();
-                
+
                 $dd = $('#dropdown-' + id);
                 if (typeof options.above == 'boolean' && options.above) {
                     $dd.addClass('_dropdown-context-up').css({
@@ -140,8 +140,12 @@
                     $dd.removeClass('_dropdown-context-up');
                     var autoH = $dd.height() + 12;
                     if ((e.pageY + autoH) > $('html').height()) {
+                      // 这里修改一下，防止菜单栏过上导致无法选择
+                        var _top = e.pageY - 20 - autoH;
+                        _top = _top < 0 ? 0 : _top;
                         $dd.addClass('_dropdown-context-up').css({
-                            top: e.pageY - 20 - autoH,
+                            // top: e.pageY - 20 - autoH,
+                            top: _top,
                             left: e.pageX - 13
                         }).fadeIn(options.fadeSpeed);
                     } else {
@@ -162,7 +166,7 @@
                 show(event);
             }
         }
-        
+
         function destroyContext(selector) {
             $(document).off('contextmenu', selector).off('click', '.context-event');
         }
@@ -173,7 +177,7 @@
                 $('._dropdown-context').css({display:''}).find('.drop-left').removeClass('drop-left');
             });
         }
-        
+
         return {
             init: initialize,
             settings: updateOptions,

@@ -1,22 +1,22 @@
 /**
  * HTTP后端数据发送处理函数
- * 更新: 2016/04/25
+ * 更新: 2016/05/07
  */
 
 'use strict';
 
 const fs = require('fs'),
   iconv = require('iconv-lite'),
-  logger = require('log4js').getLogger('Request'),
   through = require('through'),
   superagent = require('superagent'),
   superagentProxy = require('superagent-proxy');
 
+let logger;
 // 请求UA
-const USER_AGENT = 'antSword/v1.3';
+const USER_AGENT = 'antSword/v2.0';
 
 // 请求超时
-const REQ_TIMEOUT = 5000;
+const REQ_TIMEOUT = 10000;
 
 // 代理配置
 const APROXY_CONF = {
@@ -27,6 +27,7 @@ const APROXY_CONF = {
 class Request {
 
   constructor(electron) {
+    logger = new electron.Logger('Request');
     const ipcMain = electron.ipcMain;
 
     ipcMain.on('aproxy', this.onAproxy.bind(this));
@@ -90,16 +91,25 @@ class Request {
    * @return {[type]}       [description]
    */
   onRequest(event, opts) {
+    logger.debug('onRequest::opts', opts);
 
-    logger.debug('onRequest::url', opts['url']);
-    logger.debug('onRequest::data', opts['data']);
-    superagent
-      .post(opts['url'])
-      .set('User-Agent', USER_AGENT)
+    const _request = superagent.post(opts['url']);
+    // 设置headers
+    _request.set('User-Agent', USER_AGENT);
+    // 自定义headers
+    for (let _ in opts.headers) {
+      _request.set(_, opts.headers[_]);
+    }
+    // 自定义body
+    const _postData = Object.assign({}, opts.body, opts.data);
+    _request
       .proxy(APROXY_CONF['uri'])
       .type('form')
-      .timeout(REQ_TIMEOUT)
-      .send(opts['data'])
+      // 超时
+      .timeout(opts.timeout || REQ_TIMEOUT)
+      // 忽略HTTPS
+      .ignoreHTTPS(opts['ignoreHTTPS'])
+      .send(_postData)
       .parse((res, callback) => {
         this.parse(opts['tag_s'], opts['tag_e'], (chunk) => {
           event.sender.send('request-chunk-' + opts['hash'], chunk);
@@ -136,15 +146,23 @@ class Request {
     let indexEnd = -1;
     let tempData = [];
 
-    // 开始HTTP请求
-    superagent
-      .post(opts['url'])
-      .set('User-Agent', USER_AGENT)
+    const _request = superagent.post(opts['url']);
+    // 设置headers
+    _request.set('User-Agent', USER_AGENT);
+    // 自定义headers
+    for (let _ in opts.headers) {
+      _request.set(_, opts.headers[_]);
+    }
+    // 自定义body
+    const _postData = Object.assign({}, opts.body, opts.data);
+    _request
       .proxy(APROXY_CONF['uri'])
       .type('form')
       // 设置超时会导致文件过大时写入出错
       // .timeout(timeout)
-      .send(opts['data'])
+      // 忽略HTTPS
+      .ignoreHTTPS(opts['ignoreHTTPS'])
+      .send(_postData)
       .pipe(through(
         (chunk) => {
           // 判断数据流中是否包含后截断符？长度++
@@ -229,7 +247,7 @@ class Request {
       res.data += finalData;
     });
     res.on('end', () => {
-      logger.info('end::size=' + res.data.length, res.data.length < 10 ? res.data : '');
+      logger.info(`end.size=${res.data.length}`, res.data);
       callback(null, new Buffer(res.data, 'binary'));
     });
   }
