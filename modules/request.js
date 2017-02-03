@@ -74,7 +74,7 @@ class Request {
       .timeout(REQ_TIMEOUT)
       .end((err, ret) => {
         if (err) {
-          logger.error("aProxy::Test Error", err);
+          logger.fatal("aProxy::Test Error", err);
           return event.sender.send('aproxytest-error-' + opts['hash'], err);
         }else{
           logger.info("aProxy::Test Success");
