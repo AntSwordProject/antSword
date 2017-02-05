@@ -142,6 +142,7 @@ class Form {
     const opt = Object.assign({}, {
       url: '',
       pwd: '',
+      note: '',
       type: 'php',
       encode: 'utf8',
       encoder: 'default'
@@ -155,9 +156,12 @@ class Form {
         }, {
           type: 'input', label: LANG['list']['add']['form']['pwd'],
           name: 'pwd', required: true, value: opt.pwd
-        }, {
+        },{
+          type: 'input', label: LANG['list']['add']['form']['note'],
+          name: 'note', value: opt.note
+        },  {
           type: 'combo', label: LANG['list']['add']['form']['encode'],
-          readonly: true, name: 'encode', options: this._parseEncodes(opt.encode)
+          name: 'encode', readonly: true, options: this._parseEncodes(opt.encode)
         }, {
           type: 'combo', label: LANG['list']['add']['form']['type'],
           name: 'type', readonly: true, options: this._parseTypes(opt.type, opt.encoder)
@@ -234,6 +238,7 @@ class Form {
     let _baseData = {
       url: base['url'],
       pwd: base['pwd'],
+      note: base['note'],
       type: base['type'],
       encode: base['encode'],
       encoder: base[`encoder_${base['type']}`]

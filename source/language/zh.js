@@ -90,6 +90,7 @@ module.exports = {
         url: 'URL地址',
         ip: 'IP地址',
         addr: '物理位置',
+        note: '网站备注',
         ctime: '创建时间',
         utime: '更新时间'
       },
@@ -102,6 +103,7 @@ module.exports = {
         form: {
           url: 'URL地址',
           pwd: '连接密码',
+          note: '网站备注',
           encode: '编码设置',
           type: '连接类型',
           encoder: '编码器'
@@ -119,6 +121,7 @@ module.exports = {
         form: {
           url: 'URL地址',
           pwd: '连接密码',
+          note: '网站备注',
           encode: '编码设置',
           type: '连接类型',
           encoder: '编码器'

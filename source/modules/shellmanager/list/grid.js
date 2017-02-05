@@ -22,13 +22,14 @@ class Grid {
       ${LANG['url']},
       ${LANG['ip']},
       ${LANG['addr']},
+      ${LANG['note']},
       ${LANG['ctime']},
       ${LANG['utime']}
     `);
-    grid.setColTypes("ro,ro,ro,ro,ro");
-    grid.setColSorting('str,str,str,str,str');
-    grid.setInitWidths("200,120,*,140,140");
-    grid.setColAlign("left,left,left,center,center");
+    grid.setColTypes("ro,ro,ro,ro,ro,ro");
+    grid.setColSorting('str,str,str,str,str,str');
+    grid.setInitWidths("200,120,*,*,140,140");
+    grid.setColAlign("left,left,left,left,center,center");
     grid.enableMultiselect(true);
 
     // 隐藏右键菜单
