@@ -160,7 +160,7 @@ function BaseInfo(){
     }
     $R="{$D}\t";
     if(substr($D,0,1)!="/"){
-        foreach(range("A","Z")as $L)
+        foreach(range("C","Z")as $L)
             if(is_dir("{$L}:"))
                 $R.="{$L}:";
     }else{

@@ -38,6 +38,14 @@ module.exports = {
       title: 'Debug',
       restart: 'Restart APP',
       devtools: 'Developer Tools'
+    },
+    tray: {
+      tip: 'AntSword',
+      show: 'Show',
+      hide: 'Hide',
+      settings: 'System setting',
+      about: 'About',
+      quit: 'Quit'
     }
   },
   shellmanager: {

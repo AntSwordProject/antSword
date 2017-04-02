@@ -11,7 +11,7 @@ const languages = {
 // 获取本地设置语言（如若没有，则获取浏览器语言
 let lang = antSword['storage']('language',
   false,
-  navigator.language
+  navigator.language.substr(0,2)
 );
 
 // 判断本地设置语言是否符合语言模板

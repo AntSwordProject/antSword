@@ -54,7 +54,7 @@ class PlugStore {
       let downLink = item.getURL();
       logger.info('down-store-plug', downLink);
       // 判断是否下载为插件
-      if (downLink.indexOf('github.com/asStore') > 0) {
+      if (downLink.indexOf('github.com/AntSword-Store') > 0) {
         // 1. 设置插件存储目录
         let savePath = path.join(CONF.tmpPath, `${fileName}.zip`);
         item.setSavePath(savePath);
@@ -113,7 +113,7 @@ class PlugStore {
           let _path = path.join(dir, _);
           // 如果是目录，则继续循环，否则删除
           if (fs.lstatSync(_path).isDirectory()) {
-            return _rmdir(_path);
+            return this.rmdir(_path);
           }
           fs.unlinkSync(_path);
         });

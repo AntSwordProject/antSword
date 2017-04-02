@@ -21,3 +21,4 @@
 ### JSP
 
 1. [JSP Custom Script for Mysql](./jsp_custom_script_for_mysql.jsp)
+2. [JSPX Custom Script for Mysql](./jspx_custom_script_for_mysql.jspx)

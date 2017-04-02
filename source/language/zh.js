@@ -39,6 +39,14 @@ module.exports = {
       title: '调试',
       restart: '重启应用',
       devtools: '开发者工具'
+    },
+    tray: {
+      tip: '中国蚁剑',
+      show: '显示',
+      hide: '隐藏',
+      settings: '系统设置',
+      about: '关于蚁剑',
+      quit: '退出'
     }
   },
   shellmanager: {

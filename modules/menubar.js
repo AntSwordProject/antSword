@@ -9,7 +9,10 @@ class Menubar {
   constructor(electron, app, mainWindow) {
 
     const Menu = electron.Menu;
-
+    const Tray = electron.Tray;
+    const nativeImage = electron.nativeImage;
+    const path = require('path');
+    
     // 清空菜单栏
     Menu.setApplicationMenu(Menu.buildFromTemplate([]));
     // 监听重载菜单事件
@@ -20,6 +23,10 @@ class Menubar {
     this.electron = electron;
     this.app = app;
     this.Menu = Menu;
+    this.Tray = Tray;
+    this.nativeImage = nativeImage;
+    this.path = path;
+    this.trayIcon = null;
     this.mainWindow = mainWindow;
   }
 
@@ -131,6 +138,61 @@ class Menubar {
     ];
     // 更新菜单栏
     this.Menu.setApplicationMenu(this.Menu.buildFromTemplate(template));
+    if (this.trayIcon) {
+      this.trayIcon.setContextMenu(this.Menu.buildFromTemplate([]));  
+    }else{
+      let image;
+      if (process.platform === 'darwin' || process.platform === 'linux') {
+         image = this.nativeImage.createFromPath(this.path.join(__dirname, '../static/imgs/tray-icon-mac-2.png'));
+      }else{
+        // windows下的Tray图标
+        image = this.nativeImage.createFromPath(this.path.join(__dirname, '../static/imgs/tray-icon-win-colorful.ico'));
+      }
+      image.setTemplateImage(true);
+      this.trayIcon = new this.Tray(image);
+    }
+    var trayMenuTemplate = [
+      {
+        label: LANG['tray']['show'],
+        click: () => {
+          this.mainWindow.show();
+        }
+      }, {
+        label: LANG['tray']['hide'],
+        click: () => {
+          if (process.platform == 'darwin') {
+            this.app.hide();
+          }else{
+            this.mainWindow.hide();
+          }
+        }
+      }, {
+        label: LANG['tray']['settings'],
+        click: event.sender.send.bind(event.sender, 'menubar', 'settings')
+      }, {
+        label: LANG['tray']['about'],
+        click: event.sender.send.bind(event.sender, 'menubar', 'settings-about')
+      }, {
+        type: 'separator'
+      }, {
+        label: LANG['tray']['quit'],
+        click: this.app.quit.bind(this.app)
+      }
+    ];
+
+    this.trayIcon.on('click', () => {
+      if (process.platform == 'darwin') return;
+      if (this.mainWindow.isVisible()) {
+          this.mainWindow.hide();
+      }else{
+        this.mainWindow.show();
+      }
+    });
+
+    this.trayIcon.setToolTip(LANG['tray']['tip']);
+
+    this.trayIcon.setContextMenu(this.Menu.buildFromTemplate(trayMenuTemplate));
+
   }
 
 }

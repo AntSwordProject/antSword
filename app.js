@@ -50,6 +50,14 @@ app
         event.preventDefault();
         app.exit(0);
       })
+      .on('minimize', (event) => {
+        event.preventDefault();
+        if (process.platform == 'darwin') {
+          app.hide();
+        }else{
+          mainWindow.hide();
+        }
+      })
       .on('resize', reloadUI)
       .on('maximize', reloadUI)
       .on('unmaximize', reloadUI)

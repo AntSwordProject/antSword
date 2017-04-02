@@ -10,7 +10,8 @@
 // 添加源码目录到全局模块加载变量，以提供后边加载
 const path = require('path');
 const Module = require('module').Module;
-Module.globalPaths.push(path.join(process.env.AS_WORKDIR, 'source'));
+const {remote} = require('electron');
+Module.globalPaths.push(path.join(remote.process.env.AS_WORKDIR, 'source'));
 
 // 开始加载时间
 let APP_START_TIME = +new Date;

