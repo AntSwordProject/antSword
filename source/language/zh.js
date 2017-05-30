@@ -17,6 +17,7 @@ module.exports = {
       settings: '系统设置',
       language: '语言设置',
       aproxy: '代理设置',
+      display: '显示设置',
       update: '检查更新',
       quit: '退出程序'
     },
@@ -494,6 +495,32 @@ module.exports = {
         title: '输入测试的 URL',
         success: '连接到代理服务器成功',
         error: '连接到代理服务器失败'
+      }
+    },
+    display: {
+      title: '显示设置',
+      success: '保存显示设置成功！',
+      error: '保存显示设置失败！',
+      confirm: {
+        content: '重启应用生效，是否重启？',
+        title: '更改显示设置'
+      },
+      toolbar: {
+        save: '保存'
+      },
+      form:{
+        shellmanager: {
+          title: '数据管理',
+          hiddencolumns: {
+            title: '隐藏选中列',
+            url: 'URL地址',
+            ip: 'IP地址',
+            addr: '物理位置',
+            note: '网站备注',
+            ctime: '创建时间',
+            utime: '更新时间'
+          }
+        }
       }
     }
   },

@@ -80,7 +80,7 @@ window.addEventListener('load', () => {
     .then(() => loadCSS('ant-static://libs/layer/src/skin/layer.ext.css'))
     .then(() => loadCSS('ant-static://libs/laydate/need/laydate.css'))
     .then(() => loadCSS('ant-static://libs/laydate/skins/default/laydate.css'))
-    .then(() => loadCSS('ant-static://libs/terminal/css/jquery.terminal.css'))
+    .then(() => loadCSS('ant-static://libs/terminal/css/jquery.terminal-1.1.1.css'))
     .then(() => loadCSS('ant-static://libs/font-awesome/css/font-awesome.min.css'))
     .then(() => loadCSS('ant-static://libs/dhtmlx/codebase/dhtmlx.css'))
     .then(() => loadCSS('ant-static://libs/dhtmlx/skins/mytheme/dhtmlx.css'))
@@ -94,7 +94,7 @@ window.addEventListener('load', () => {
     .then(() => loadJS('ant-static://libs/toastr/toastr.js'))
     .then(() => loadJS('ant-static://libs/layer/src/layer.js'))
     .then(() => loadJS('ant-static://libs/laydate/laydate.js'))
-    .then(() => loadJS('ant-static://libs/terminal/js/jquery.terminal-min.js'))
+    .then(() => loadJS('ant-static://libs/terminal/js/jquery.terminal-min-1.1.1.js'))
     .then(() => loadJS('ant-static://libs/dhtmlx/codebase/dhtmlx.js'))
     .then(() => {
       /**

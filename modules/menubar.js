@@ -56,6 +56,10 @@ class Menubar {
             accelerator: 'Shift+CmdOrCtrl+A',
             click: event.sender.send.bind(event.sender, 'menubar', 'settings-aproxy')
           }, {
+            label: LANG['main']['display'],
+            accelerator: 'Shift+CmdOrCtrl+D',
+            click: event.sender.send.bind(event.sender, 'menubar', 'settings-display')
+          }, {
             type: 'separator'
           }, {
             label: LANG['main']['encoders'],

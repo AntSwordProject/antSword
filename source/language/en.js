@@ -16,6 +16,7 @@ module.exports = {
       settings: 'System setting',
       language: 'Language setting',
       aproxy: 'Proxy setting',
+      display: 'Display setting',
       update: 'Check update',
       quit: 'Quit'
     },
@@ -494,39 +495,32 @@ module.exports = {
         success: 'Connect to proxy server successfully',
         error: 'Failed to connect to the proxy server'
       }
-    }
-  },
-  aproxy: {
-    title: 'Proxy Configuration',
-    toolbar: {
-      save: 'Save',
-      test: 'Test Connection'
     },
-    form: {
-      label: 'Configuring proxy access to the Internet',
-      mode:{
-        noproxy: 'No Proxy',
-        manualproxy: 'Set the proxy manually'
+    display: {
+      title: 'Display setting',
+      success: 'Save display settings successfully!',
+      error: 'Failed to save the display settings!',
+      confirm: {
+        content: 'Restart the application to take effect, whether to restart?',
+        title: 'Change display settings'
       },
-      proxy: {
-        protocol: 'Protocol',
-        server: 'Server',
-        port: 'Port',
-        username: 'Username',
-        password: 'Password',
-        authtip: 'Leave blank if no authentication'
+      toolbar: {
+        save: 'Save'
+      },
+      form:{
+        shellmanager: {
+          title: 'Shell Lists',
+          hiddencolumns: {
+            title: 'Hide selected columns',
+            url: 'URL',
+            ip: 'IP',
+            addr: 'ADDR',
+            note: 'NOTE',
+            ctime: 'CTIME',
+            utime: 'UTIME'
+          }
+        }
       }
-    },
-    success: 'Successfully save the Proxy Configuration!',
-    error: 'Failed to save the Proxy Configuration!',
-    confirm: {
-      content: 'Restart the application?',
-      title: 'Proxy Configuration'
-    },
-    prompt:{
-      title: 'Input the target URL',
-      success: 'Successfully connect to the proxy server',
-      error: 'Failed to connect to the proxy server'
     }
   },
   plugin: {

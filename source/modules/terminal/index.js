@@ -198,8 +198,10 @@ class Terminal {
         greetings: banner,
         name: `terminal_${this.hash}`,
         prompt: this.parsePrompt(infoUser),
+        numChars: 2048,
         exit: false,
-        completion: (term, value, callback) => {
+        // < 1.0.0 时使用3个参数 completion: (term, value, callback) => {}
+        completion: (value, callback) => {
           callback(
             this.isWin ? [
               'dir', 'whoami', 'net', 'ipconfig', 'netstat', 'cls',

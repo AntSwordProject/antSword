@@ -31,6 +31,9 @@ class Grid {
     grid.setInitWidths("200,120,*,*,140,140");
     grid.setColAlign("left,left,left,left,center,center");
     grid.enableMultiselect(true);
+    // 根据设置隐藏相应的列
+    const dis_smhc = localStorage.hasOwnProperty('display_shellmanager_hiddencolumns') ? JSON.parse(localStorage.display_shellmanager_hiddencolumns):[];
+    dis_smhc.map((_)=>{grid.setColumnHidden(_,true)});
 
     // 隐藏右键菜单
     grid.attachEvent('onRowSelect', bmenu.hide);
