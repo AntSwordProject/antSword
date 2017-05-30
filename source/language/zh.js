@@ -455,6 +455,14 @@ module.exports = {
         success: '更新成功！请稍后手动重启应用！'
       }
     },
+    encoders:{
+      title: '编码管理',
+      form:{
+        shelltype: '脚本类型',
+        encoderslist: '编码器列表'
+      },
+      success: '编码器加载成功'
+    },
     aproxy: {
       title: '代理设置',
       toolbar: {

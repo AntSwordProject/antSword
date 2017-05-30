@@ -454,6 +454,14 @@ module.exports = {
         success: 'Update success! Please manually restart the application later!'
       }
     },
+    encoders:{
+      title: 'Encoder Manager',
+      form:{
+        shelltype: 'Shell Type',
+        encoderslist: 'Encoder Lists'
+      },
+      success: 'Loaded Encoder Successfully'
+    },
     aproxy: {
       title: 'Proxy setting',
       toolbar: {

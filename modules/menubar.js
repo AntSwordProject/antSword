@@ -12,7 +12,7 @@ class Menubar {
     const Tray = electron.Tray;
     const nativeImage = electron.nativeImage;
     const path = require('path');
-    
+
     // 清空菜单栏
     Menu.setApplicationMenu(Menu.buildFromTemplate([]));
     // 监听重载菜单事件
@@ -55,6 +55,12 @@ class Menubar {
             label: LANG['main']['aproxy'],
             accelerator: 'Shift+CmdOrCtrl+A',
             click: event.sender.send.bind(event.sender, 'menubar', 'settings-aproxy')
+          }, {
+            type: 'separator'
+          }, {
+            label: LANG['main']['encoders'],
+            accelerator: 'Shift+CmdOrCtrl+E',
+            click: event.sender.send.bind(event.sender, 'menubar', 'settings-encoders')
           }, {
             type: 'separator'
           }, {
