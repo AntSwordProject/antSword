@@ -15,6 +15,7 @@ module.exports = {
       pluginStore: 'Plugin Store',
       settings: 'System setting',
       language: 'Language setting',
+      encoders: 'Encoders manager',
       aproxy: 'Proxy setting',
       display: 'Display setting',
       update: 'Check update',
