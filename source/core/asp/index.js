@@ -10,6 +10,7 @@
 const Base = require('../base');
 
 class ASP extends Base {
+
   constructor(opts) {
     super(opts);
     // 解析模板
@@ -33,7 +34,7 @@ class ASP extends Base {
    * @return {array} 编码器列表
    */
   get encoders() {
-    return ['xxxxdog'];
+    return localStorage.getItem('encoders_asp').split(',') || ['xxxxdog'];
   }
 
   /**
