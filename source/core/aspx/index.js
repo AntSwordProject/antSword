@@ -37,7 +37,7 @@ class ASPX extends Base {
    * @return {array} 编码器列表
    */
   get encoders() {
-    return ['base64', 'hex'];
+    return localStorage.getItem('encoders_aspx').split(',') || ['base64', 'hex'];
   }
 
   /**

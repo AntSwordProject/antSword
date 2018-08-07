@@ -44,6 +44,11 @@ const antSword = window.antSword = {
    * 核心模块
    * @type {Object}
    */
+  encoders: {},
+  /**
+   * 核心模块
+   * @type {Object}
+   */
   core: {},
   /**
    * 插件列表
@@ -68,6 +73,8 @@ const antSword = window.antSword = {
     if (!value) {
       return localStorage.getItem(key) || def;
     };
+    if (typeof(x) === "object")
+      value = JSON.stringify(value);
     // 设置
     localStorage.setItem(key, value);
   },
@@ -116,6 +123,33 @@ antSword['core'] = require('./core/');
 
 // 加载语言模板
 antSword['language'] = require('./language/');
+
+// 加载编码
+antSword['encoders'] = (function(){
+  var encoders = {asp:[],aspx:[],php:[],custom:[]};
+  // custom
+  let es = fs.readdirSync(path.join(process.env.AS_WORKDIR,'antData/encoder'));
+  if(es){
+    es.map((_)=>{
+      let farr = _.split("#");
+      encoders[farr[0]].push(farr[1].slice(0,-3));
+    });
+  }
+  // default
+  ['asp','aspx','php','custom'].map((t)=>{
+    antSword["core"][t].prototype.encoders.map((e)=>{
+      encoders[t].push(e);
+    });
+    encoders[t] = encoders[t].unique();
+  });
+  // fs.readdirSync(path.join(process.env.AS_WORKDIR,'encoder'),(err,f) => {
+  //   if(err || !f) return ;
+  //   console.debug(f);
+  //   let farr = f.split("#");
+  //   encoders[farr[0]].push(farr[1]);
+  // });
+  return encoders;
+})();
 
 // 加载代理
 const aproxy = {

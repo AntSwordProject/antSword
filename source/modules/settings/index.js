@@ -11,12 +11,13 @@ const About = require('./about');
 const Language = require('./language');
 const AProxy = require('./aproxy');
 const Display = require('./display');
+const Encoders = require('./encoders');
 
 class Settings {
 
   constructor() {
     antSword['menubar'].reg('settings', this.open.bind(this));
-    ['about', 'update', 'language', 'aproxy', 'display'].map((_) => {
+    ['about', 'update', 'language', 'aproxy','display', 'encoders'].map((_) => {
       antSword['menubar'].reg(`settings-${_}`, this.setActive.bind(this, _));
     });
     return this;
@@ -44,7 +45,8 @@ class Settings {
     // this.update = new Update(sidebar);
     this.aproxy = new AProxy(sidebar);
     this.display = new Display(sidebar);
-
+    // Encoders
+    this.encoders = new Encoders(sidebar);
     this.cell = cell;
     this.sidebar = sidebar;
 

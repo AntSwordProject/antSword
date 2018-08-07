@@ -15,6 +15,7 @@ module.exports = {
       pluginStore: 'Plugin Store',
       settings: 'System setting',
       language: 'Language setting',
+      encoders: 'Encoders manager',
       aproxy: 'Proxy setting',
       display: 'Display setting',
       update: 'Check update',
@@ -454,6 +455,14 @@ module.exports = {
         fail: (err) => `Update failed! [${err}]`,
         success: 'Update success! Please manually restart the application later!'
       }
+    },
+    encoders:{
+      title: 'Encoder Manager',
+      form:{
+        shelltype: 'Shell Type',
+        encoderslist: 'Encoder Lists'
+      },
+      success: 'Loaded Encoder Successfully'
     },
     aproxy: {
       title: 'Proxy setting',

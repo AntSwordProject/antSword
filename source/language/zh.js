@@ -16,6 +16,7 @@ module.exports = {
       pluginStore: '插件市场',
       settings: '系统设置',
       language: '语言设置',
+      encoders: '编码设置',
       aproxy: '代理设置',
       display: '显示设置',
       update: '检查更新',
@@ -455,6 +456,14 @@ module.exports = {
         fail: (err) => `更新失败！【${err}】`,
         success: '更新成功！请稍后手动重启应用！'
       }
+    },
+    encoders:{
+      title: '编码管理',
+      form:{
+        shelltype: '脚本类型',
+        encoderslist: '编码器列表'
+      },
+      success: '编码器加载成功'
     },
     aproxy: {
       title: '代理设置',
