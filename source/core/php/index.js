@@ -22,6 +22,7 @@ class PHP extends Base {
       'database/oracle',
       'database/oracle_oci8',
       'database/postgresql',
+      'database/postgresql_pdo',
       'database/informix'
     ].map((_) => {
       this.parseTemplate(`./php/template/${_}`);

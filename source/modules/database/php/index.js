@@ -85,6 +85,7 @@ class PHP {
               sql = `SELECT ${column} FROM ${db}.${table} WHERE ROWNUM < 20 ORDER BY 1`;
               break;
             case 'postgresql':
+            case 'postgresql_pdo':
               sql = `SELECT ${column} FROM ${table} ORDER BY 1 DESC LIMIT 20 OFFSET 0;`;
               break;
             default:
@@ -269,6 +270,7 @@ class PHP {
       'oracle': ['UTF8','ZHS16GBK','ZHT16BIG5','ZHS16GBKFIXED','ZHT16BIG5FIXED'],
       'oracle_oci8': ['UTF8','ZHS16GBK','ZHT16BIG5','ZHS16GBKFIXED','ZHT16BIG5FIXED'],
       'postgresql': ['utf8', 'big5', 'dec8', 'cp850', 'hp8', 'koi8r', 'latin1', 'latin2', 'ascii', 'euckr', 'gb2312', 'gbk'],
+      'postgresql_pdo': ['utf8', 'big5', 'dec8', 'cp850', 'hp8', 'koi8r', 'latin1', 'latin2', 'ascii', 'euckr', 'gb2312', 'gbk'],
       'informix': ['utf8', 'big5', 'dec8', 'cp850', 'hp8', 'koi8r', 'latin1', 'latin2', 'ascii', 'euckr', 'gb2312', 'gbk'],
     }
   }
@@ -347,6 +349,7 @@ class PHP {
           { text: 'ORACLE', value: 'oracle' },
           { text: 'ORACLE_OCI8', value: 'oracle_oci8' },
           { text: 'PostgreSQL', value: 'postgresql' },
+          { text: 'PostgreSQL_PDO', value: 'postgresql_pdo' },
           { text: 'INFORMIX', value: 'informix' }
         ] },
         { type: 'combo', label: LANG['form']['encode'], name: 'encode', options: ((c) => {
@@ -410,6 +413,7 @@ class PHP {
           })
           break;
         case 'postgresql':
+        case 'postgresql_pdo':
           form.setFormData({
             host: 'localhost:5432',
             user: 'postgres',
@@ -535,6 +539,7 @@ class PHP {
           { text: 'ORACLE', value: 'oracle', selected: conf['type'] === 'oracle' },
           { text: 'ORACLE_OCI8', value: 'oracle_oci8', selected: conf['type'] === 'oracle_oci8' },
           { text: 'PostgreSQL', value: 'postgresql', selected: conf['type'] === 'postgresql' },
+          { text: 'PostgreSQL_PDO', value: 'postgresql_pdo', selected: conf['type'] === 'postgresql_pdo' },
           { text: 'INFORMIX', value: 'informix', selected: conf['type'] === 'informix' }
         ] },
         { type: 'combo', label: LANG['form']['encode'], name: 'encode', options: ((c) => {
@@ -1491,6 +1496,7 @@ class PHP {
           presql = `SELECT * FROM ${db}.${table} WHERE ROWNUM < 20 ORDER BY 1`;
           break;
         case 'postgresql':
+        case 'postgresql_pdo':
           presql = `SELECT * FROM ${table} ORDER BY 1 DESC LIMIT 20 OFFSET 0;`;
           break;
         default:
