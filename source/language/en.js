@@ -176,6 +176,7 @@ module.exports = {
       otherConf: {
         nohttps: 'Ignore HTTPS certificate',
         usemultipart: 'Use Multipart send payload',
+        userandomvariable:'Use random English word variables',
         chunk: {
           title: 'Chunked Transfer (Experimentally)',
           usechunk: 'Use Chunked send payload.',

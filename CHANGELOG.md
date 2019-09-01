@@ -2,6 +2,14 @@
 > 有空会补补BUG、添添新功能。    
 > 同时也欢迎大家的参与！感谢各位朋友的支持！ .TAT.
 
+## `v(2.1.6)`
+
+### 其它
+
+* `jsp_custom_script_for_mysql` 提供 `AES` 编码解码示例
+* `jsp_custom_script_for_mysql` 增加 Version 显示
+* windows 下单击鼠标左键 Tray Icon 显示/隐藏 主窗口 改为 「双击」
+
 ## 2019/08/19 `v(2.1.5)`
 
 ### 核心模块

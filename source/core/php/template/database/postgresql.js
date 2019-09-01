@@ -11,8 +11,8 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $usr=$m?stripslashes($_POST["${arg2}"]):$_POST["${arg2}"];
       $pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];
       $arr=array(
-        'host'=>split(':',$hst)[0],
-        'port'=>split(':',$hst)[1],
+        'host'=>explode(':',$hst)[0],
+        'port'=>explode(':',$hst)[1],
         'user'=>$usr,
         'password'=>$pwd,
       );
@@ -50,8 +50,8 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];
       $dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];
       $arr=array(
-        'host'=>split(':',$hst)[0],
-        'port'=>split(':',$hst)[1],
+        'host'=>explode(':',$hst)[0],
+        'port'=>explode(':',$hst)[1],
         'user'=>$usr,
         'password'=>$pwd,
         'dbname'=>$dbn,
@@ -92,8 +92,8 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];
       $tab=$m?stripslashes($_POST["${arg5}"]):$_POST["${arg5}"];
       $arr=array(
-        'host'=>split(':',$hst)[0],
-        'port'=>split(':',$hst)[1],
+        'host'=>explode(':',$hst)[0],
+        'port'=>explode(':',$hst)[1],
         'user'=>$usr,
         'password'=>$pwd,
         'dbname'=>$dbn,
@@ -137,8 +137,8 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $sql=base64_decode($_POST["${arg5}"]);
       $encode=$m?stripslashes($_POST["${arg6}"]):$_POST["${arg6}"];
       $arr=array(
-        'host'=>split(':',$hst)[0],
-        'port'=>split(':',$hst)[1],
+        'host'=>explode(':',$hst)[0],
+        'port'=>explode(':',$hst)[1],
         'user'=>$usr,
         'password'=>$pwd,
         'dbname'=>$dbn,

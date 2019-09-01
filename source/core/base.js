@@ -9,6 +9,8 @@
 const iconv = require('iconv-lite');
 const NodeRSA = require('node-rsa');
 const fs = require('fs');
+const words = require('../../modules/words');
+
 
 class Base {
 
@@ -88,10 +90,12 @@ class Base {
    */
   argv() {
     // 生成一个随机的变量名
-    let random = () => `0x${ (Math.random() + Math.random())
-      .toString(16)
-      .substr(2)}`;
-    // 返回六个随机变量名数组
+    let random;
+    if(this.__opts__.otherConf["use-random-variable"] == 1){
+      random = () => `${words.randomWords[parseInt(Math.random() * words.randomWords.length)]}`;//从word.js随机返回单词
+    }else{
+      random = () => `${(Math.random() + Math.random()).toString(16).substr(2)}`; // 返回六个随机变量名数组
+    }
     return [
       random(),
       random(),
@@ -279,9 +283,7 @@ class Base {
           encoding = encoding != "unknown" ?
             encoding :
             this.__opts__['encode'];
-          let text = antSword
-            .Decodes
-            .decode(buff, encoding);
+          let text = antSword.Decodes.decode(buff, encoding);
           return res({
             'encoding': encoding || "",
             'text': text,
@@ -311,6 +313,7 @@ class Base {
           chunkStepMin: (this.__opts__['otherConf'] || {})['chunk-step-byte-min'] || 2,
           chunkStepMax: (this.__opts__['otherConf'] || {})['chunk-step-byte-max'] || 3,
           useMultipart: (this.__opts__['otherConf'] || {})['use-multipart'] === 1,
+          useRandomVariable: (this.__opts__['otherConf'] || {})['use-random-variable'] === 1,
           timeout: parseInt((this.__opts__['otherConf'] || {})['request-timeout']),
           headers: (this.__opts__['httpConf'] || {})['headers'] || {},
           body: (this.__opts__['httpConf'] || {})['body'] || {}
@@ -362,6 +365,7 @@ class Base {
           chunkStepMin: (this.__opts__['otherConf'] || {})['chunk-step-byte-min'] || 2,
           chunkStepMax: (this.__opts__['otherConf'] || {})['chunk-step-byte-max'] || 3,
           useMultipart: (this.__opts__['otherConf'] || {})['use-multipart'] === 1,
+          useRandomVariable: (this.__opts__['otherConf'] || {})['use-random-variable'] === 1,
           timeout: parseInt((this.__opts__['otherConf'] || {})['request-timeout']),
           headers: (this.__opts__['httpConf'] || {})['headers'] || {},
           body: (this.__opts__['httpConf'] || {})['body'] || {}

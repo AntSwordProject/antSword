@@ -2,3 +2,5 @@ node_modules
 .DS_*
 antData
 .vscode/
+shells/
+

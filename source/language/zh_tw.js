@@ -177,6 +177,7 @@ module.exports = {
       otherConf: {
         nohttps: '忽略HTTPS證書',
         usemultipart: '使用 Multipart 發包',
+        userandomvariable:'使用随机英文单词变量',
         chunk: {
           title: '分塊傳輸(實驗性功能)',
           usechunk: '開啟分塊傳輸發包',

