@@ -445,6 +445,7 @@ class Form {
     const opt = Object.assign({}, {
       'ignore-https': 0,
       'use-multipart': 0,
+      'use-random-variable': 0,
       'use-chunk': 0,
       'chunk-step-byte-min': 2,
       'chunk-step-byte-max': 3,
@@ -470,7 +471,12 @@ class Form {
           name: 'ignore-https',
           label: LANG['list']['otherConf']['nohttps'],
           checked: opt['ignore-https'] === 1
-        }, {
+        },{
+          type: "checkbox",
+          name: 'use-random-variable',
+          label: LANG['list']['otherConf']['userandomvariable'],
+          checked: opt['use-random-variable'] === 1
+        },{
           type: "checkbox",
           name: 'use-multipart',
           label: LANG['list']['otherConf']['usemultipart'],
