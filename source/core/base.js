@@ -84,23 +84,13 @@ class Base {
     return key;
   }
   
-  getRandomVariable(array){
-    var arr1 = new Array();
-    var arr2 = new Array();
-    for (var i = 0; i < array.length; i++) {
-        arr1.push(array[i]);
+  getRandomVariable(array) {
+    var tmp = [];
+    while (tmp.length < 6) {
+        let v = array[Math.ceil(Math.random() * array.length - 1)];
+        tmp.indexOf(v) === -1 && tmp.push(v);
     }
-    
-    for (var k = 0; k < 6; k++) {
-        var id = Math.ceil(Math.random() * arr1.length-1);
-        if (arr2.indexOf(arr1[id]) === -1) {
-            arr2.push(arr1[id]);
-        } else {
-            k = k - 1;
-            continue;
-        }
-    }
-    return  arr2;
+    return tmp;
   }
 
 
