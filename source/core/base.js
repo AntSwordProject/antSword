@@ -24,7 +24,7 @@ class Base {
     opts['encode'] = opts['encode'] || 'utf8';
     opts['encoder'] = opts['encoder'] || 'default';
     this.__opts__ = opts;
-
+    
     this['__encoder__'] = {
       /**
        * 默认编码器
@@ -83,6 +83,26 @@ class Base {
     } catch (e) {}
     return key;
   }
+  
+  getRandomVariable(array){
+    var arr1 = new Array();
+    var arr2 = new Array();
+    for (var i = 0; i < array.length; i++) {
+        arr1.push(array[i]);
+    }
+    
+    for (var k = 0; k < 6; k++) {
+        var id = Math.ceil(Math.random() * arr1.length-1);
+        if (arr2.indexOf(arr1[id]) === -1) {
+            arr2.push(arr1[id]);
+        } else {
+            k = k - 1;
+            continue;
+        }
+    }
+    return  arr2;
+  }
+
 
   /**
    * 返回参数列表
@@ -91,19 +111,21 @@ class Base {
   argv() {
     // 生成一个随机的变量名
     let random;
+    
     if(this.__opts__.otherConf["use-random-variable"] == 1){
-      random = () => `${words.randomWords[parseInt(Math.random() * words.randomWords.length)]}`;//从word.js随机返回单词
+      //random = () => `${words.randomWords[parseInt(Math.random() * words.randomWords.length)]}`;//从word.js随机返回单词
+      return this.getRandomVariable(words.randomWords);
     }else{
       random = () => `${(Math.random() + Math.random()).toString(16).substr(2)}`; // 返回六个随机变量名数组
+      return [
+        random(),
+        random(),
+        random(),
+        random(),
+        random(),
+        random()
+      ];
     }
-    return [
-      random(),
-      random(),
-      random(),
-      random(),
-      random(),
-      random()
-    ];
   }
 
   /**
