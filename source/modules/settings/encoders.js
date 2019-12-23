@@ -20,7 +20,7 @@ class Encoders {
     this.encoders = antSword["encoders"];
     this.decoders = antSword["decoders"];
 
-    let keyPath = path.join(remote.process.env.AS_WORKDIR, `antData/`);
+    let keyPath = path.join(remote.process.env.AS_DATADIR, `antData/`);
     this.rsa = {
       keyPath: {
         pub: `${keyPath}/key_rsa.pub`,
@@ -203,7 +203,7 @@ class Encoders {
               toastr.error(LANG['message']['ename_duplicate'], LANG_T['error']);
               return;
             }
-            fs.renameSync(oepath, path.join(remote.process.env.AS_WORKDIR, `antData/encoders/${oetype}/${oedtype}/${nValue}.js`));
+            fs.renameSync(oepath, path.join(remote.process.env.AS_DATADIR, `antData/encoders/${oetype}/${oedtype}/${nValue}.js`));
             toastr.success(LANG['message']["rename_success"], LANG_T["success"]);
             break
           case 2:
@@ -220,7 +220,7 @@ class Encoders {
               toastr.error("Not Support", LANG_T["error"]);
               return;
             }
-            fs.renameSync(oepath, path.join(remote.process.env.AS_WORKDIR, `antData/encoders/${nValue}/${oedtype}/${oename}.js`));
+            fs.renameSync(oepath, path.join(remote.process.env.AS_DATADIR, `antData/encoders/${nValue}/${oedtype}/${oename}.js`));
             toastr.success(LANG['message']["retype_success"], LANG_T["success"]);
             break
         }
@@ -260,7 +260,7 @@ class Encoders {
         layer.close(i);
         return
       }
-      let savePath = path.join(remote.process.env.AS_WORKDIR, `antData/encoders/${type}/${edtype}/${value}${rsa}.js`);
+      let savePath = path.join(remote.process.env.AS_DATADIR, `antData/encoders/${type}/${edtype}/${value}${rsa}.js`);
 
       let filedata = '';
       if (edtype === 'encoder') {
@@ -695,7 +695,7 @@ module.exports = {
             data.push({
               id: _id,
               ename: _,
-              epath: path.join(remote.process.env.AS_WORKDIR, `antData/encoders/${t}/encoder/${_}`),
+              epath: path.join(remote.process.env.AS_DATADIR, `antData/encoders/${t}/encoder/${_}`),
               etype: t, // shell Type
               edtype: 'encoder',
               data: [
@@ -717,7 +717,7 @@ module.exports = {
             data.push({
               id: _id,
               ename: _,
-              epath: path.join(remote.process.env.AS_WORKDIR, `antData/encoders/${t}/decoder/${_}`),
+              epath: path.join(remote.process.env.AS_DATADIR, `antData/encoders/${t}/decoder/${_}`),
               etype: t, // shell Type
               edtype: 'decoder',
               data: [
@@ -755,7 +755,7 @@ module.exports = {
         php: [],
         custom: []
       };
-      let userencoder_path = path.join(remote.process.env.AS_WORKDIR, 'antData/encoders');
+      let userencoder_path = path.join(remote.process.env.AS_DATADIR, 'antData/encoders');
       // 初始化
       !fs.existsSync(userencoder_path) ?
         fs.mkdirSync(userencoder_path) :
@@ -802,7 +802,7 @@ module.exports = {
         php: [],
         custom: []
       };
-      let userdecoder_path = path.join(remote.process.env.AS_WORKDIR, 'antData/encoders');
+      let userdecoder_path = path.join(remote.process.env.AS_DATADIR, 'antData/encoders');
       // 初始化
       !fs.existsSync(userdecoder_path) ?
         fs.mkdirSync(userdecoder_path) :
