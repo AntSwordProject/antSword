@@ -85,8 +85,28 @@ class CUSTOM {
             const db = Buffer.from(_co[1], 'base64').toString();
             const table = Buffer.from(_co[2], 'base64').toString();
             const column = Buffer.from(_co[3], 'base64').toString();
-
-            const sql = `SELECT ${column} FROM ${db}.${table} ORDER BY 1 DESC;`;
+            let sql = "";
+            switch (this.dbconf['type']) {
+              case 'mysql':
+                sql = `SELECT \`${column}\` FROM \`${table}\` ORDER BY 1 DESC LIMIT 0,20;`;
+                break;
+              case 'sqlserver':
+              case 'mssql':
+              case 'sqlsrv':
+                sql = `SELECT TOP 20 [${column}] FROM [${table}] ORDER BY 1 DESC;`;
+                break;
+              case 'oracle':
+              case 'oracle_oci8':
+                sql = `SELECT ${column} FROM ${db}.${table} WHERE ROWNUM < 20 ORDER BY 1`;
+                break;
+              case 'postgresql':
+              case 'postgresql_pdo':
+                sql = `SELECT ${column} FROM ${table} ORDER BY 1 DESC LIMIT 20 OFFSET 0;`;
+                break;
+              default:
+                sql = `SELECT \`${column}\` FROM \`${table}\` ORDER BY 1 DESC LIMIT 0,20;`;
+                break;
+            }
             this
               .manager
               .query
@@ -496,11 +516,7 @@ class CUSTOM {
 
   // 获取数据库列表
   getDatabases(id) {
-    this
-      .manager
-      .list
-      .layout
-      .progressOn();
+    this.manager.list.layout.progressOn();
     // 获取配置
     const conf = antSword['ipcRenderer'].sendSync('shell-getDataConf', {
       _id: this.manager.opt['_id'],
@@ -512,8 +528,7 @@ class CUSTOM {
         conn: conf['conn'],
         encode: this.manager.opt.encode,
         db: ['access', 'microsoft_jet_oledb_4_0'].indexOf(conf['type']) > -1 ?
-          conf['conn'].match(/[\w]+.mdb$/) :
-          'database'
+          conf['conn'].match(/[\w]+.mdb$/) : 'database'
       }))
       .then((res) => {
         let ret = res['text'];
@@ -527,20 +542,14 @@ class CUSTOM {
             .progressOff();
         };
         // 删除子节点
-        this
-          .tree
-          .deleteChildItems(`conn::${id}`);
+        this.tree.deleteChildItems(`conn::${id}`);
         // 添加子节点
         arr.map((_) => {
           if (!_) {
             return
           };
-          const _db = Buffer
-            .from(_)
-            .toString('base64');
-          this
-            .tree
-            .insertNewItem(`conn::${id}`, `database::${id}:${_db}`, antSword.noxss(_), null, this.manager.list.imgs[1], this.manager.list.imgs[1], this.manager.list.imgs[1]);
+          const _db = Buffer.from(antSword.unxss(_)).toString('base64');
+          this.tree.insertNewItem(`conn::${id}`, `database::${id}:${_db}`, _, null, this.manager.list.imgs[1], this.manager.list.imgs[1], this.manager.list.imgs[1]);
         });
         this
           .manager
@@ -581,24 +590,20 @@ class CUSTOM {
       .then((res) => {
         let ret = res['text'];
         const arr = ret.split('\t');
-        const _db = Buffer
-          .from(db)
-          .toString('base64');
+        const _db = Buffer.from(db).toString('base64');
         // 删除子节点
-        this
-          .tree
-          .deleteChildItems(`database::${id}:${_db}`);
+        this.tree.deleteChildItems(`database::${id}:${_db}`);
         // 添加子节点
         arr.map((_) => {
           if (!_) {
             return
           };
           const _table = Buffer
-            .from(_)
+            .from(antSword.unxss(_))
             .toString('base64');
           this
             .tree
-            .insertNewItem(`database::${id}:${_db}`, `table::${id}:${_db}:${_table}`, antSword.noxss(_), null, this.manager.list.imgs[2], this.manager.list.imgs[2], this.manager.list.imgs[2]);
+            .insertNewItem(`database::${id}:${_db}`, `table::${id}:${_db}:${_table}`, _, null, this.manager.list.imgs[2], this.manager.list.imgs[2], this.manager.list.imgs[2]);
         });
         this
           .manager
@@ -655,8 +660,9 @@ class CUSTOM {
           if (!_) {
             return
           };
+          _ = antSword.unxss(_);
           const _column = Buffer
-            .from(_.substr(_, _.lastIndexOf(' ')))
+            .from(_.substr(0, _.lastIndexOf(' ')))
             .toString('base64');
           this
             .tree
@@ -732,10 +738,7 @@ class CUSTOM {
       return toastr.error(LANG['result']['error']['parse'], LANG_T['error']);
     };
     // 3.行头
-    let header_arr = antSword
-      .noxss(arr[0])
-      .replace(/,/g, '&#44;')
-      .split('\t|\t');
+    let header_arr = (arr[0]).replace(/,/g, '&#44;').split('\t|\t');
     if (header_arr.length === 1) {
       return toastr.warning(LANG['result']['error']['noresult'], LANG_T['warning']);
     };

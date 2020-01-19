@@ -64,14 +64,17 @@ class ASPX extends Base {
    */
   complete(data, force_default = false) {
     // 分隔符号
-    let tag_s = Math
-      .random()
-      .toString(16)
-      .substr(2, parseInt(Math.random() * 8 + 5)); // '->|';
-    let tag_e = Math
-      .random()
-      .toString(16)
-      .substr(2, parseInt(Math.random() * 8 + 5)); // '|<-';
+    let tag_s, tag_e;
+    if (this.__opts__['otherConf'].hasOwnProperty('use-custom-datatag') && this.__opts__['otherConf']['use-custom-datatag'] == 1 && this.__opts__['otherConf']['custom-datatag-tags']) {
+      tag_s = this.__opts__['otherConf']['custom-datatag-tags'];
+    } else {
+      tag_s = Math.random().toString(16).substr(2, parseInt(Math.random() * 8 + 5)); // "->|";
+    }
+    if (this.__opts__['otherConf'].hasOwnProperty('use-custom-datatag') && this.__opts__['otherConf']['use-custom-datatag'] == 1 && this.__opts__['otherConf']['custom-datatag-tage']) {
+      tag_e = this.__opts__['otherConf']['custom-datatag-tage'];
+    } else {
+      tag_e = Math.random().toString(16).substr(2, parseInt(Math.random() * 8 + 5)); // "|<-";
+    }
 
     // let formatter = new this.format(this.__opts__['encode']);
     let formatter = Base

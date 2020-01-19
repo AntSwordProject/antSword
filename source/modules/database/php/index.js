@@ -1271,7 +1271,7 @@ class PHP {
     let dbname = Buffer.from(treeselect.split('::')[1].split(":")[1],"base64").toString();
     let tablename = Buffer.from(treeselect.split('::')[1].split(":")[2],"base64").toString();
     let columnname = Buffer.from(treeselect.split('::')[1].split(":")[3],"base64").toString();
-    let columntyperaw = this.tree.getSelectedItemText();
+    let columntyperaw = antSword.unxss(this.tree.getSelectedItemText());
     let columntype = null;
     var ctypereg = new RegExp(columnname+'\\s\\((.+?\\))\\)');
     var res = columntyperaw.match(ctypereg);
@@ -1383,11 +1383,11 @@ class PHP {
       // 添加子节点
       arr.map((_) => {
         if (!_) { return };
-        const _db = Buffer.from(_).toString('base64');
+        const _db = Buffer.from(antSword.unxss(_, false)).toString('base64');
         this.tree.insertNewItem(
           `conn::${id}`,
           `database::${id}:${_db}`,
-          antSword.noxss(_), null,
+          _, null,
           this.manager.list.imgs[1],
           this.manager.list.imgs[1],
           this.manager.list.imgs[1]);
@@ -1427,11 +1427,11 @@ class PHP {
       // 添加子节点
       arr.map((_) => {
         if (!_) { return };
-        const _table = Buffer.from(_).toString('base64');
+        const _table = Buffer.from(antSword.unxss(_, false)).toString('base64');
         this.tree.insertNewItem(
           `database::${id}:${_db}`,
           `table::${id}:${_db}:${_table}`,
-          antSword.noxss(_),
+          _,
           null,
           this.manager.list.imgs[2],
           this.manager.list.imgs[2],
@@ -1475,7 +1475,9 @@ class PHP {
       // 添加子节点
       arr.map((_) => {
         if (!_) { return };
-        const _column = Buffer.from(_.substr(_, _.lastIndexOf(' '))).toString('base64');
+        _ = antSword.unxss(_, false);
+        const _column = Buffer.from(_.substr(0, _.lastIndexOf(' '))).toString('base64');
+
         this.tree.insertNewItem(
           `table::${id}:${_db}:${_table}`,
           `column::${id}:${_db}:${_table}:${_column}`,
@@ -1562,7 +1564,7 @@ class PHP {
       return toastr.error(LANG['result']['error']['parse'], LANG_T['error']);
     };
     // 3.行头
-    let header_arr = antSword.noxss(arr[0]).replace(/,/g, '&#44;').split('\t|\t');
+    let header_arr = (arr[0]).replace(/,/g, '&#44;').split('\t|\t');
     if (header_arr.length === 1) {
       return toastr.warning(LANG['result']['error']['noresult'], LANG_T['warning']);
     };
@@ -1623,7 +1625,7 @@ class PHP {
       return toastr.error(LANG['result']['error']['parse'], LANG_T['error']);
     };
     // 3.行头
-    let header_arr = antSword.noxss(arr[0]).replace(/,/g, '&#44;').split('\t|\t');
+    let header_arr = (arr[0]).replace(/,/g, '&#44;').split('\t|\t');
     if (header_arr.length === 1) {
       return toastr.warning(LANG['result']['error']['noresult'], LANG_T['warning']);
     };

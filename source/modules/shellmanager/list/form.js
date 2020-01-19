@@ -50,6 +50,11 @@ class Form {
               "httpConf": opts.http,
               "otherConf": opts.other
             }
+            if (opt['otherConf']['use-custom-datatag'] === 1) {
+              if (opt['otherConf']['custom-datatag-tags'] === opt['otherConf']['custom-datatag-tage']) {
+                return toastr.warning(LANG['list']['otherConf']['customDatatag']['valideq'], LANG_T['warning']);
+              }
+            }
             win.progressOn();
             let core = new antSword["core"][opt['type']](opt);
             core
@@ -72,11 +77,27 @@ class Form {
             if (!this.baseForm.validate() || !this.httpForm.validate() || !this.otherForm.validate()) {
               return toastr.warning(LANG['list']['add']['warning'], LANG_T['warning']);
             };
+            let _opts = this._parseFormData(this.baseForm.getValues(), this.httpForm.getValues(), this.otherForm.getValues());
+            let _opt = {
+              "url": _opts.base['url'],
+              "pwd": _opts.base['pwd'],
+              "type": _opts.base['type'],
+              "encode": _opts.base['encode'],
+              "encoder": _opts.base['encoder'],
+              "decoder": _opts.base['decoder'],
+              "httpConf": _opts.http,
+              "otherConf": _opts.other
+            }
+            if (_opt['otherConf']['use-custom-datatag'] === 1) {
+              if (_opt['otherConf']['custom-datatag-tags'] === _opt['otherConf']['custom-datatag-tage']) {
+                return toastr.warning(LANG['list']['otherConf']['customDatatag']['valideq'], LANG_T['warning']);
+              }
+            }
             // 回调数据
             if (callback) {
               win.progressOn();
               setTimeout(() => {
-                callback(this._parseFormData(this.baseForm.getValues(), this.httpForm.getValues(), this.otherForm.getValues())).then((msg) => {
+                callback(_opts).then((msg) => {
                   // 添加/保存完毕后回调
                   win.close();
                   toastr.success(msg, LANG_T['success']);
@@ -454,7 +475,10 @@ class Form {
       'filemanager-cache': 1,
       'upload-fragment': '500',
       'request-timeout': '10000',
-      'command-path': ''
+      'command-path': '',
+      'use-custom-datatag': 0,
+      'custom-datatag-tags': '',
+      'custom-datatag-tage': ''
     }, arg.otherConf);
     const form = this
       .accordion
@@ -472,12 +496,12 @@ class Form {
           name: 'ignore-https',
           label: LANG['list']['otherConf']['nohttps'],
           checked: opt['ignore-https'] === 1
-        },{
+        }, {
           type: "checkbox",
           name: 'use-random-variable',
           label: LANG['list']['otherConf']['userandomvariable'],
           checked: opt['use-random-variable'] === 1
-        },{
+        }, {
           type: "checkbox",
           name: 'add-MassData',
           label: LANG['list']['otherConf']['addMassData'],
@@ -659,6 +683,87 @@ class Form {
             });
             return ret;
           })(['/bin/sh', 'cmd'])
+        }, {
+          type: 'fieldset',
+          offsetLeft: 0,
+          label: LANG['list']['otherConf']['customDatatag']['title'],
+          list: [{
+            type: 'block',
+            offsetLeft: 0,
+            list: [{
+              type: "checkbox",
+              name: 'use-custom-datatag',
+              label: LANG['list']['otherConf']['customDatatag']['usecustomdatatag'],
+              checked: opt['use-custom-datatag'] === 1
+            }]
+          }, {
+            type: 'block',
+            offsetLeft: 0,
+            list: [{
+              type: 'label',
+              label: LANG['list']['otherConf']['customDatatag']['tags']
+            }, {
+              type: 'newcolumn'
+            }, {
+              type: 'combo',
+              label: '',
+              validate: '',
+              inputWidth: 80,
+              name: "custom-datatag-tags",
+              options: ((items) => {
+                let ret = [];
+                // 如果自定义的路径不在items里，则++
+                if (items.indexOf(opt['custom-datatag-tags']) === -1) {
+                  items.unshift(opt['custom-datatag-tags']);
+                }
+                items.map((_) => {
+                  ret.push({
+                    text: _,
+                    value: _,
+                    selected: opt['custom-datatag-tags'] === _
+                  })
+                });
+                return ret;
+              })([
+                '->|',
+                '~~>|',
+                '__}|'
+              ])
+            }, {
+              type: 'newcolumn'
+            }, {
+              type: 'label',
+              label: LANG['list']['otherConf']['customDatatag']['tage'],
+              offsetLeft: 30
+            }, {
+              type: 'newcolumn'
+            }, {
+              type: 'combo',
+              label: '',
+              validate: '',
+              inputWidth: 80,
+              name: "custom-datatag-tage",
+              options: ((items) => {
+                let ret = [];
+                // 如果自定义的路径不在items里，则++
+                if (items.indexOf(opt['custom-datatag-tage']) === -1) {
+                  items.unshift(opt['custom-datatag-tage']);
+                }
+                items.map((_) => {
+                  ret.push({
+                    text: _,
+                    value: _,
+                    selected: opt['custom-datatag-tage'] === _
+                  })
+                });
+                return ret;
+              })([
+                '|<-',
+                '|<~~',
+                '|{~~'
+              ])
+            }]
+          }]
         }]
       }], true);
     form.attachEvent('onChange', (name, value, state) => {
@@ -681,6 +786,14 @@ class Form {
               title: LANG_T['info'],
               content: LANG['list']['otherConf']['chunk']['exphint']
             });
+          }
+          break;
+        case 'use-custom-datatag':
+          if (state == true && form.isItemChecked('use-custom-datatag')) {
+            layer.open({
+              title: LANG_T['info'],
+              content: LANG['list']['otherConf']['customDatatag']['exphint']
+            })
           }
           break;
         default:

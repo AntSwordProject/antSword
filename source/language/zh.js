@@ -192,7 +192,15 @@ module.exports = {
         filemanagerCache: '文件管理使用缓存',
         uploadFragment: '上传文件分片大小',
         requestTimeout: '请求超时',
-        commandPath: '自定义终端执行路径'
+        commandPath: '自定义终端执行路径',
+        customDatatag: {
+          title: '数据分割符',
+          usecustomdatatag: '开启自定义数据分割符',
+          tags: '开始标记',
+          tage: '结束标记',
+          exphint: '数据分割符请避免和页面中其它不相关的字符相同',
+          valideq: '开始标记与结束标记不能相同'
+        },
       }
     },
     toolbar: {
@@ -215,9 +223,11 @@ module.exports = {
     ascmd: {
       help: '输入 ashelp 查看本地命令',
       ashelp: `使用帮助:
+ asenv [Key=Value]\t\t设置或显示环境变量, eg: asenv AAA=BBB
  ascmd [file]\t\t指定file来执行命令, eg: ascmd /bin/bash
  aslistcmd\t\t列出可使用的命令解释器
  aspowershell [on|off]\t\t启用/关闭PowerShell模式, eg: aspowershell on
+ aswinmode [on|off]\t\t强制启用/关闭为Windows模式(针对识别出错的情况), eg: aswinmode on
  quit\t\t关闭终端
  exit\t\t关闭终端
 
@@ -413,6 +423,7 @@ module.exports = {
     editor: {
       title: (path) => `编辑: ${path}`,
       toolbar: {
+        refresh: '刷新',
         save: '保存',
         mode: '高亮',
         encode: '用此编码打开'

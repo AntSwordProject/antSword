@@ -172,7 +172,7 @@ class FileManager {
         path: path
       })
     ).then((res) => {
-      let ret = res['text'];
+      let ret = antSword.unxss(res['text']);
       // 判断是否出错
       if (ret.startsWith('ERROR://')) {
         callback([]);
@@ -440,7 +440,7 @@ class FileManager {
       this.core.request(
         this.core.filemanager.create_file({
           path: this.path + value,
-          content: '#Halo ANT!'
+          content: '#Halo AntSword!'
         })
       ).then((res) => {
         let ret = res['text'];
@@ -871,7 +871,7 @@ class FileManager {
     let codes = '';
     let win;
     let hinttext = '';
-    let tooltip = `IP:${this.opts['ip']} File:${antSword.noxss(path)}`;
+    let tooltip = `IP:${this.opts['ip']} File:`;
     if (openfileintab == false) {
       win = this.createWin({
         title: LANG['editor']['title'](antSword.noxss(path)),
@@ -894,7 +894,7 @@ class FileManager {
         tmpbuf.write(name, 100 - name.length);
         hitpath = tmpbuf.toString();
       }
-      hinttext = `IP:${this.opts['ip']} File:${antSword.noxss(hitpath)}`;
+      hinttext = `IP:${this.opts['ip']} File:`;
     }
 
     win.progressOn();
@@ -953,10 +953,22 @@ class FileManager {
         text: hinttext
       },
       {
+        id: 'filepath',
+        type: 'buttonInput',
+        width: 500,
+        value: antSword.noxss(path),
+      },
+      {
         type: 'separator'
       },
       {
         type: 'spacer'
+      },
+      {
+        id: 'refresh',
+        type: 'button',
+        icon: 'refresh',
+        text: LANG['editor']['toolbar']['refresh']
       },
       {
         id: 'save',
@@ -1004,7 +1016,7 @@ class FileManager {
         self.core.request(
           self.core.filemanager.create_file({
             path: path,
-            content: editor.session.getValue() || 'Halo ANT!'
+            content: editor.session.getValue() || '#Halo AntSword!'
           })
         ).then((res) => {
           let ret = res['text'];
@@ -1025,8 +1037,49 @@ class FileManager {
       } else if (id.startsWith('encode_')) {
         let encode = id.split('_')[1];
         editor.session.setValue(iconv.decode(Buffer.from(codes), encode).toString());
+      } else if (id === 'refresh') {
+        // 获取文件代码
+        win.progressOn()
+        this.core.request(
+          this.core.filemanager.read_file({
+            path: path
+          })
+        ).then((res) => {
+          win.progressOff();
+          name = path.substr(path.lastIndexOf('/') + 1);
+          if (openfileintab == false) {
+            win.setText(LANG['editor']['title'](antSword.noxss(path)));
+          } else {
+            win.setText(`<i class="fa fa-file-o"></i> ${antSword.noxss(name)}`);
+          }
+          ext = name.substr(name.lastIndexOf('.') + 1);
+          if (!(ext in ext_dict)) {
+            ext = 'txt'
+          };
+          toolbar.callEvent('onClick', [`mode_${ext_dict[ext]}`]);
+
+          let ret = antSword.unxss(res['text'], false);
+          codes = Buffer.from(antSword.unxss(res['buff'].toString(), false));
+          let encoding = res['encoding'] || this.opts['encode'];
+          if (encoding.toUpperCase() == "UTF-8") {
+            encoding = "UTF8";
+          }
+          toolbar.setListOptionSelected('encode', `encode_${encoding}`);
+          editor.session.setValue(ret);
+        }).catch((err) => {
+          toastr.error(LANG['editor']['loadErr'](err), LANG_T['error']);
+          win.progressOff()
+        })
       } else {
         console.info('toolbar.onClick', id);
+      }
+    });
+    toolbar.attachEvent('onEnter', (id, value) => {
+      switch (id) {
+        case 'filepath':
+          path = toolbar.getInput('filepath').value;
+          toolbar.callEvent('onClick', ['refresh']);
+          break;
       }
     });
 
@@ -1036,8 +1089,8 @@ class FileManager {
         path: path
       })
     ).then((res) => {
-      let ret = res['text'];
-      codes = res['buff'];
+      let ret = antSword.unxss(res['text'], false);
+      codes = Buffer.from(antSword.unxss(res['buff'].toString(), false));
       let encoding = res['encoding'] || this.opts['encode'];
       if (encoding.toUpperCase() == "UTF-8") {
         encoding = "UTF8";

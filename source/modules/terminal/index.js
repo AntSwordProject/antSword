@@ -50,6 +50,7 @@ class Terminal {
     this.sess_powershell = null;
     this.core = new antSword['core'][opts['type']](opts);
     this.cache = new antSword['CacheManager'](this.opts['_id']);
+    this.asenvironmet = {};
 
     this
       .getInformation()
@@ -274,6 +275,35 @@ class Terminal {
         }
         return;
       }
+      // 当 web 目录使用的是 smb 目录时, windows 下路径为 //xxx.xxx.xxx.xxx/share
+      // 第一个字符为 / 则会识别为 Linux 系统, 需要使用该指令手动切换成 windows mode
+      // Fix https://github.com/AntSwordProject/antSword/issues/229
+      if (cmd.substr(0, 9) === 'aswinmode') {
+        var _switch = cmd.substr(9).trim().toLowerCase();
+        if (_switch === "off") {
+          self.isWin = false;
+          term.echo("Windows Mode: [[b;red;]Off]");
+        } else if (_switch === "on") {
+          self.isWin = true;
+          term.echo("Windows Mode: [[b;green;]On]");
+        } else {
+          term.echo(`Current Windows Mode: ${self.isWin ? "[[b;green;]On]" : "[[b;red;]Off]"}`);
+        }
+        return;
+      }
+      if (cmd.substr(0, 5) === 'asenv') {
+        var envstr = cmd.substr(5).trim();
+        if (envstr.length > 0 && envstr.indexOf('=') > 0) {
+          var k = envstr.substr(0, envstr.indexOf('=')).trim();
+          var v = envstr.substr(envstr.indexOf('=') + 1).trim();
+          this.asenvironmet[k] = v;
+        } else {
+          Object.keys(this.asenvironmet).map((k) => {
+            term.echo(`${antSword.noxss(k)}=${antSword.noxss(this.asenvironmet[k])}`);
+          });
+        }
+        return;
+      }
       term.pause();
       // 是否有缓存
       let cacheTag = 'command-' + Buffer
@@ -308,10 +338,13 @@ class Terminal {
         .core
         .request(this.core.command.exec({
           cmd: this.parseCmd(cmd, this.path),
-          bin: _bin
+          bin: _bin,
+          env: Object.keys(this.asenvironmet).map((k) => {
+            return `${k}|||askey|||${this.asenvironmet[k]}|||asline|||`;
+          }).join(''),
         }))
         .then((ret) => {
-          let _ = ret['text'];
+          let _ = antSword.unxss(ret['text'], false);
           // 解析出命令执行路径
           const indexS = _.lastIndexOf('[S]');
           const indexE = _.lastIndexOf('[E]');
@@ -365,7 +398,7 @@ class Terminal {
       exit: false,
       // < 1.0.0 时使用3个参数 completion: (term, value, callback) => {}
       completion: (value, callback) => {
-        callback(['ashelp', 'ascmd', 'aslistcmd', 'aspowershell', 'quit', 'exit'].concat(
+        callback(['asenv', 'ashelp', 'ascmd', 'aslistcmd', 'aspowershell', 'aswinmode', 'quit', 'exit'].concat(
           this.isWin ? [
             'dir', 'whoami', 'net', 'ipconfig', 'netstat', 'cls', 'wscript', 'nslookup', 'copy', 'del', 'ren', 'md', 'type', 'ping'
           ] : [

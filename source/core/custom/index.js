@@ -55,9 +55,17 @@ class CUSTOM extends Base {
    */
   complete(data, force_default = false) {
     // 分隔符号
-    let tag_s = '->|';
-    let tag_e = '|<-';
-
+    let tag_s, tag_e;
+    if (this.__opts__['otherConf'].hasOwnProperty('use-custom-datatag') && this.__opts__['otherConf']['use-custom-datatag'] == 1 && this.__opts__['otherConf']['custom-datatag-tags']) {
+      tag_s = this.__opts__['otherConf']['custom-datatag-tags'];
+    } else {
+      tag_s = "->|";
+    }
+    if (this.__opts__['otherConf'].hasOwnProperty('use-custom-datatag') && this.__opts__['otherConf']['use-custom-datatag'] == 1 && this.__opts__['otherConf']['custom-datatag-tage']) {
+      tag_e = this.__opts__['otherConf']['custom-datatag-tage'];
+    } else {
+      tag_e = "|<-";
+    }
     // 使用编码器进行处理并返回
     return this.encodeComplete(tag_s, tag_e, data);
   }

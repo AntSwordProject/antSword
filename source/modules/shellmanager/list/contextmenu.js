@@ -185,8 +185,7 @@ class ContextMenu {
                   }
                   // 判断是否支持多目标执行
                   return ret || !p['info']['multiple'];
-                })() :
-                info && (p['info']['scripts'] || []).indexOf(info['type']) === -1,
+                })() : info && (p['info']['scripts'] || []).indexOf(info['type']) === -1,
               action: ((plug) => () => {
                 // 如果没有加载到内存，则加载
                 if (!antSword['plugins'][plug['_id']]['module']) {
@@ -252,8 +251,7 @@ class ContextMenu {
     items.map((_) => {
       ret.push({
         text: _ === 'default' ?
-          LANG['category']['default'] :
-          _,
+          LANG['category']['default'] : _,
         icon: 'fa fa-folder-o',
         disabled: category === _,
         action: moveHandler.bind(null, _)
@@ -394,7 +392,8 @@ class ContextMenu {
         note: info['note'],
         type: info['type'],
         encode: info['encode'],
-        encoder: info['encoder']
+        encoder: info['encoder'],
+        decoder: info['decoder'],
       },
       http: info['httpConf'] || {},
       other: info['otherConf'] || {}

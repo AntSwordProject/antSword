@@ -38,6 +38,24 @@ const antSword = window.antSword = {
     return _html;
   },
   /**
+   * unxss
+   * @param  {String}  html 转义的字符串
+   * @param  {Boolean} wrap 是否反转义换行
+   * @return {String}       反转义后的字符串
+   */
+  unxss: (html = '', wrap = true) => {
+    let _html = String(html)
+      .replace(/&apos;/g, "'")
+      .replace(/&gt;/g, ">")
+      .replace(/&lt;/g, "<")
+      .replace(/&quot;/g, '"')
+      .replace(/&amp;/g, "&");
+    if (wrap) {
+      _html = _html.replace(/<br\/>/g, '\n'); // 只替换 noxss 转义过的
+    }
+    return _html;
+  },
+  /**
    * 终端日志数据
    * @type {Array}
    */
@@ -622,7 +640,7 @@ antSword['menubar'].reg('check-update', () => {
     .send('check-loader-update');
 });
 
-if (new Date() - new Date(antSword['storage']('lastautocheck', false, "0")) >= 86400000) {
+if (new Date() - new Date(parseInt(antSword['storage']('lastautocheck', false, "0"))) >= 86400000) {
   // 检查更新
   antSword['storage']('lastautocheck', new Date().getTime());
   setTimeout(() => {

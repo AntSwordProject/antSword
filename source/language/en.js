@@ -192,7 +192,15 @@ module.exports = {
         filemanagerCache: "Use the filemanager's cache",
         uploadFragment: "Upload File Fragmentation Size",
         requestTimeout: 'Request timeout',
-        commandPath: 'Custom terminal-execPath'
+        commandPath: 'Custom terminal-execPath',
+        customDatatag: {
+          title: 'Data separator',
+          usecustomdatatag: 'Use custom data separator',
+          tags: 'Start tag',
+          tage: 'End tag',
+          exphint: 'The data separator should be the same as other unrelated characters on the page',
+          valideq: 'Start tag and End tag cannot be the same'
+        },
       }
     },
     toolbar: {
@@ -215,9 +223,11 @@ module.exports = {
     ascmd: {
       help: 'Enter ashelp to view local commands',
       ashelp: `Usage:
+ asenv [Key=Value]\t\tSet or Display Environment Variables, eg: asenv AAA=BBB
  ascmd [file]\t\tExecute the command with file, eg: ascmd /bin/bash
  aslistcmd\t\tList available command interpreters
  aspowershell [on|off]\t\tEnable/Disable PowerShell mode, eg: aspowershell on
+ aswinmode [on|off]\t\tEnable/Disable Windows mode(for recognition errors), eg: aswinmode on
  quit\t\tClose terminal
  exit\t\tClose terminal
 
@@ -413,6 +423,7 @@ Hot Keys:
     editor: {
       title: (path) => antSword.noxss(`Edit: ${path}`),
       toolbar: {
+        refresh: 'Refresh',
         save: 'Save',
         mode: 'Mode',
         encode: 'Open with Encoding'

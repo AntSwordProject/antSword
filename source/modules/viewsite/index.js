@@ -217,6 +217,10 @@ class ViewSite {
       show: false,
       autoHideMenuBar: true,
       webPreferences: {
+        sandbox: true,
+        contextIsolation: true,
+        allowpopups: false,
+        allowRunningInsecureContent: false,
         nodeIntegration: false
       },
       title: url

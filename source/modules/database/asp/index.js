@@ -527,8 +527,7 @@ class ASP {
       .request(this.core[`database_${conf['type']}`].show_databases({
         conn: conf['conn'],
         dbname: ['access', 'microsoft_jet_oledb_4_0'].indexOf(conf['type']) > -1 ?
-          conf['conn'].match(/[\w]+.mdb$/) :
-          'database'
+          conf['conn'].match(/[\w]+.mdb$/) : 'database'
       }))
       .then((res) => {
         let ret = res['text'];
@@ -554,11 +553,11 @@ class ASP {
             return
           };
           const _db = Buffer
-            .from(_)
+            .from(antSword.unxss(_))
             .toString('base64');
           this
             .tree
-            .insertNewItem(`conn::${id}`, `database::${id}:${_db}`, antSword.noxss(_), null, this.manager.list.imgs[1], this.manager.list.imgs[1], this.manager.list.imgs[1]);
+            .insertNewItem(`conn::${id}`, `database::${id}:${_db}`, _, null, this.manager.list.imgs[1], this.manager.list.imgs[1], this.manager.list.imgs[1]);
         });
         this
           .manager
@@ -614,11 +613,11 @@ class ASP {
             return
           };
           const _table = Buffer
-            .from(_)
+            .from(antSword.unxss(_))
             .toString('base64');
           this
             .tree
-            .insertNewItem(`database::${id}:${_db}`, `table::${id}:${_db}:${_table}`, antSword.noxss(_), null, this.manager.list.imgs[2], this.manager.list.imgs[2], this.manager.list.imgs[2]);
+            .insertNewItem(`database::${id}:${_db}`, `table::${id}:${_db}:${_table}`, _, null, this.manager.list.imgs[2], this.manager.list.imgs[2], this.manager.list.imgs[2]);
         });
         this
           .manager
@@ -693,8 +692,9 @@ class ASP {
           if (!_) {
             return
           };
+          _ = antSword.unxss(_);
           const _column = Buffer
-            .from(_.substr(_, _.lastIndexOf(' ')))
+            .from(_.substr(0, _.lastIndexOf(' ')))
             .toString('base64');
           this
             .tree
@@ -783,10 +783,7 @@ class ASP {
       return toastr.error(LANG['result']['error']['parse'], LANG_T['error']);
     };
     // 3.行头
-    let header_arr = antSword
-      .noxss(arr[0])
-      .replace(/,/g, '&#44;')
-      .split('\t|\t');
+    let header_arr = (arr[0]).replace(/,/g, '&#44;').split('\t|\t');
     if (header_arr.length === 1) {
       return toastr.warning(LANG['result']['error']['noresult'], LANG_T['warning']);
     };

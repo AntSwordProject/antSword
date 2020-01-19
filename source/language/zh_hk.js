@@ -191,7 +191,15 @@ module.exports = {
         filemanagerCache: '文件管理使用緩存',
         uploadFragment: '上傳文件分片大小',
         requestTimeout: '請求超時',
-        commandPath: '自定義終端執行路徑'
+        commandPath: '自定義終端執行路徑',
+        customDatatag: {
+          title: '數據分割符',
+          usecustomdatatag: '開啟自定義數據分割符',
+          tags: '開始標記',
+          tage: '結束標記',
+          exphint: '數據分割符請避免和頁面中其它不相關的字符相同',
+          valideq: '開始標記與結束標記不能相同'
+        },
       }
     },
     toolbar: {
@@ -214,9 +222,11 @@ module.exports = {
     ascmd: {
       help: '輸入 ashelp 查看本地命令',
       ashelp: `使用幫助:
+ asenv[Key=Value]\t\t設置或顯示環境變量, eg: asenv AAA=BBB
  ascmd [file]\t\t指定file來執行命令, eg: ascmd /bin/bash
  aslistcmd\t\t列出可使用的命令解釋器
  aspowershell [on|off]\t\t啟用/關閉PowerShell模式, eg: aspowershell on
+ aswinmode [on|off]\t\t強制啟用/關閉為Windows模式(針對識別出錯的情況), eg: aswinmode on
  quit\t\t關閉終端
  exit\t\t關閉終端
 
@@ -412,6 +422,7 @@ module.exports = {
     editor: {
       title: (path) => `編輯: ${path}`,
       toolbar: {
+        refresh: '刷新',
         save: '保存',
         mode: '高亮',
         encode: '用此編碼打開'

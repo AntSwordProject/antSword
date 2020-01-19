@@ -1,6 +1,6 @@
 {
   "name": "antsword",
-  "version": "2.1.6",
+  "version": "2.1.8.1",
   "description": "中国蚁剑是一款跨平台的开源网站管理工具",
   "main": "app.js",
   "dependencies": {

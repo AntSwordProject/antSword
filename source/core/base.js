@@ -304,7 +304,7 @@ class Base {
           return res({
             'encoding': encoding || "",
             'text': antSword.noxss(text, false),
-            'buff': Buffer.from(antSword.noxss(buff.toString()), false)
+            'buff': Buffer.from(antSword.noxss(buff.toString(), false))
           });
         })
         // HTTP请求返回字节流

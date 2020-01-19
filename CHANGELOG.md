@@ -2,6 +2,89 @@
 > 有空会补补BUG、添添新功能。    
 > 同时也欢迎大家的参与！感谢各位朋友的支持！ .TAT.
 
+## 2019/12/04 `v(2.1.8.1)`
+
+* Fix ViewSite security issue thx @imagemlt
+
+## 2019/12/04 `v(2.1.8)`
+
+### 核心
+
+* 修复全局过滤 xss 时 text 和 buff 过滤规则不一致问题
+* core.command.exec 增加第 3个参数 env
+
+ 格式为: `key1|||askey|||val1|||asline|||key2|||askey|||val2|||asline|||`
+ 
+ 对应的环境变量为:
+
+```
+key1=val1
+key2=val2
+```
+
+### 数据管理
+
+* 新增「自定义数据分割符」配置
+
+> 你可以将任何你喜欢的字符组合定义成数据的「起始符」或「结束符」
+
+![data_separtor_1.png](https://i.loli.net/2019/11/05/per1BvOMh5IKZqt.png)
+
+![data_separtor_2.png](https://i.loli.net/2019/11/05/QECmJprI5FldB9b.png)
+
+* 修复「创建副本」时不会同步 decoder 的问题
+
+### 文件管理
+
+* 编辑文件新增「刷新」按钮
+
+ > 如果服务器上的文件内容发生改变, 再也不需要关掉重打开了
+
+* 新建文件默认内容更改为 `#Halo AntSword!`
+
+* 编辑文件文件路径改为输入框, 现在可以手动输入文件路径后, 按 Enter 键快速打开文件了
+
+![file_manager_filepath.png](https://i.loli.net/2019/12/04/rtpJCafoDLSBsAi.png)
+
+### 虚拟终端
+
+* 新增 `asenv` 本地指令, 用于手动设置当前终端下的环境变量
+
+Linux:
+
+![terminal_asenv_1.png](https://i.loli.net/2019/12/03/k3AgCmlNbIM8QDZ.png)
+
+Windows:
+
+![terminal_asenv_2.png](https://i.loli.net/2019/12/03/uzjvAgRT1Bdbkhw.png)
+
+> 注意: asp 下设置之后, 当前机器上的IIS子进程都会受影响, 过一段时间子进程退出后正常
+
+* 新增 `aswinmode` 本地指令, 在自动识别操作系统错误时, 可使用该指令手动切换命令行运行的模式 (#229 thx @nullnull1604-outlook)
+
+![terminal_aswinmode.png](https://i.loli.net/2019/12/03/HpbjN6sERhYoiUX.png)
+
+### 其它
+
+* ACE 编辑器增加 `ace/mode/antswordjwt` 语法模式, 支持 JWT Token 语法高亮
+
+## 2019/10/30 `v(2.1.7)`
+
+### 安全更新
+
+* fix #222 感谢 @9tail123
+* **重要**: 增加全局 html 转义, 在每次响应后强制进行 html 转义, 避免过滤时漏掉的问题
+
+ > 此更新会影响大部分插件的使用, 请及时更新插件或重装插件
+ >
+ > 如果在使用当中发现二次转义的情况, 请报告 issue
+
+* 新增「报告漏洞」链接, 可在「关于程序」页中看到, 也可点下面的链接直达
+
+ https://forms.gle/HrUMxedsyREeXw4R9
+
+ > 如在后续发现漏洞, 请以该方式进行提交, 待修复后再公开
+
 ## 2019/09/17 `v(2.1.6)`
 
 ### 后端模块

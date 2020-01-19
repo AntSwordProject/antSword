@@ -14,15 +14,17 @@ class PHP4 extends PHP {
    */
   complete(data, force_default = false) {
     // 分隔符号
-
-    let tag_s = Math
-      .random()
-      .toString(16)
-      .substr(2, parseInt(Math.random() * 8 + 5)); // "->|";
-    let tag_e = Math
-      .random()
-      .toString(16)
-      .substr(2, parseInt(Math.random() * 8 + 5)); // "|<-";
+    let tag_s, tag_e;
+    if (this.__opts__['otherConf'].hasOwnProperty('use-custom-datatag') && this.__opts__['otherConf']['use-custom-datatag'] == 1 && this.__opts__['otherConf']['custom-datatag-tags']) {
+      tag_s = this.__opts__['otherConf']['custom-datatag-tags'];
+    } else {
+      tag_s = Math.random().toString(16).substr(2, parseInt(Math.random() * 8 + 5)); // "->|";
+    }
+    if (this.__opts__['otherConf'].hasOwnProperty('use-custom-datatag') && this.__opts__['otherConf']['use-custom-datatag'] == 1 && this.__opts__['otherConf']['custom-datatag-tage']) {
+      tag_e = this.__opts__['otherConf']['custom-datatag-tage'];
+    } else {
+      tag_e = Math.random().toString(16).substr(2, parseInt(Math.random() * 8 + 5)); // "|<-";
+    }
     let asencCode;
     if (!force_default) {
       asencCode = this.__decoder__[this.__opts__['decoder'] || 'default'].asoutput();
