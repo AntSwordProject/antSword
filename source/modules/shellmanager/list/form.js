@@ -445,6 +445,7 @@ class Form {
     const opt = Object.assign({}, {
       'ignore-https': 0,
       'use-multipart': 0,
+      'add-MassData': 0,
       'use-random-variable': 0,
       'use-chunk': 0,
       'chunk-step-byte-min': 2,
@@ -478,10 +479,15 @@ class Form {
           checked: opt['use-random-variable'] === 1
         },{
           type: "checkbox",
+          name: 'add-MassData',
+          label: LANG['list']['otherConf']['addMassData'],
+          checked: opt['add-MassData'] === 1
+        }, {
+          type: "checkbox",
           name: 'use-multipart',
           label: LANG['list']['otherConf']['usemultipart'],
           checked: opt['use-multipart'] === 1
-        }, {
+        },{
           type: 'fieldset',
           offsetLeft: 0,
           label: LANG['list']['otherConf']['chunk']['title'],
@@ -666,6 +672,10 @@ class Form {
           if (state == true && form.isItemChecked('use-multipart')) {
             form.uncheckItem('use-multipart');
           }
+        // case 'add-MassData':
+        //   if (state == true && form.isItemChecked('add-MassData')) {
+        //     form.uncheckItem('add-MassData');
+        //   }
           if (state == true) {
             layer.open({
               title: LANG_T['info'],

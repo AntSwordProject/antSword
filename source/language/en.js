@@ -176,6 +176,7 @@ module.exports = {
       otherConf: {
         nohttps: 'Ignore HTTPS certificate',
         usemultipart: 'Use Multipart send payload',
+        addMassData: 'Add garbage data in payload',
         userandomvariable: 'Use random English word variables',
         chunk: {
           title: 'Chunked Transfer (Experimentally)',
@@ -620,6 +621,7 @@ Hot Keys:
       document: 'Document',
       qqgroup: 'QQ Group',
       discord: 'Discord',
+      securityreport: 'Security Report',
       wechat: 'Fllow us on WeChat'
     },
     language: {

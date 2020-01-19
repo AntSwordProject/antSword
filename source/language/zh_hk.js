@@ -177,6 +177,7 @@ module.exports = {
       otherConf: {
         nohttps: '忽略HTTPS證書',
         usemultipart: '使用 Multipart 發包',
+        addMassData: '增加垃圾數據',
         userandomvariable: '使用隨機英文單詞變量',
         chunk: {
           title: '分塊傳輸(實驗性功能)',
@@ -619,6 +620,7 @@ module.exports = {
       document: '文檔',
       qqgroup: 'Q羣',
       discord: '在線交流',
+      securityreport: '報告漏洞',
       wechat: '關注微信公眾號'
     },
     language: {

@@ -303,8 +303,8 @@ class Base {
           let text = antSword.Decodes.decode(buff, encoding);
           return res({
             'encoding': encoding || "",
-            'text': text,
-            'buff': buff
+            'text': antSword.noxss(text, false),
+            'buff': Buffer.from(antSword.noxss(buff.toString()), false)
           });
         })
         // HTTP请求返回字节流
@@ -330,6 +330,7 @@ class Base {
           chunkStepMin: (this.__opts__['otherConf'] || {})['chunk-step-byte-min'] || 2,
           chunkStepMax: (this.__opts__['otherConf'] || {})['chunk-step-byte-max'] || 3,
           useMultipart: (this.__opts__['otherConf'] || {})['use-multipart'] === 1,
+          addMassData: (this.__opts__['otherConf'] || {})['add-MassData'] === 1,
           useRandomVariable: (this.__opts__['otherConf'] || {})['use-random-variable'] === 1,
           timeout: parseInt((this.__opts__['otherConf'] || {})['request-timeout']),
           headers: (this.__opts__['httpConf'] || {})['headers'] || {},
@@ -382,6 +383,7 @@ class Base {
           chunkStepMin: (this.__opts__['otherConf'] || {})['chunk-step-byte-min'] || 2,
           chunkStepMax: (this.__opts__['otherConf'] || {})['chunk-step-byte-max'] || 3,
           useMultipart: (this.__opts__['otherConf'] || {})['use-multipart'] === 1,
+          addMassData: (this.__opts__['otherConf'] || {})['add-MassData'] === 1,
           useRandomVariable: (this.__opts__['otherConf'] || {})['use-random-variable'] === 1,
           timeout: parseInt((this.__opts__['otherConf'] || {})['request-timeout']),
           headers: (this.__opts__['httpConf'] || {})['headers'] || {},
