@@ -14,7 +14,7 @@ class Core {
   constructor() {
     // 加载子模块列表
     let cores = {};
-    ['php', 'asp', 'aspx', 'custom', 'php4'].map((_) => {
+    ['php', 'asp', 'aspx', 'jsp', 'custom', 'php4'].map((_) => {
       cores[_] = require(`./${_}/index`);
     });
     // 返回子模块对象

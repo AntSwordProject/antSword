@@ -28,7 +28,8 @@ class ADefault {
         others: {
           "ignore-https": 0,
           "use-random-variable": 0,
-          "request-timeout": '10000'
+          "request-timeout": '10000',
+          "random-Prefix": '2'
         }
       },
       terminal: {

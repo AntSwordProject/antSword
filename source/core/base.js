@@ -129,7 +129,9 @@ class Base {
    * @param  {String} encode [字符串编码，默认utf8]
    * @return {Object}        [返回字符串处理函数对象]
    */
-  format(encode) {
+  format(opts) {
+    let encode = opts['encode'];
+    let randomPrefix = parseInt(opts.otherConf["random-Prefix"]);
     return {
       /**
        * base64编码
@@ -138,6 +140,20 @@ class Base {
        */
       base64(str) {
         return Buffer.from(iconv.encode(Buffer.from(str), encode)).toString('base64');
+      },
+      /**
+       * 增加随机前缀的base64编码
+       * @param  {String} str 字符串
+       * @return {String}     编码后的字符串
+       */
+      newbase64(str) {
+        let randomString = (length) => {
+          let chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+          let result = '';
+          for (let i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+          return result;
+        }
+        return randomString(randomPrefix) + Buffer.from(iconv.encode(Buffer.from(str), encode)).toString('base64');
       },
       /**
        * 字符串转16进制（不进行编码转换
@@ -175,10 +191,9 @@ class Base {
     // 加载模板
     let _argv = this.argv();
     let templateObj = require(`${tpl}`)(_argv[0], _argv[1], _argv[2], _argv[3], _argv[4], _argv[5]);
-    // let formatter = new this.format(this.__opts__['encode']);
     let formatter = Base
       .prototype
-      .format(this.__opts__['encode']);
+      .format(this.__opts__);
     // 解析模板
     for (let funcName in templateObj) {
       this[templateName][funcName] = ((args) => {
@@ -211,6 +226,7 @@ class Base {
                 })
             }
             // 发送HTTP请求
+            data['_'] = data['_'].replace(/#randomPrefix#/g, this.__opts__.otherConf["random-Prefix"]);
             return data;
           }
         } else {
@@ -330,6 +346,8 @@ class Base {
           chunkStepMin: (this.__opts__['otherConf'] || {})['chunk-step-byte-min'] || 2,
           chunkStepMax: (this.__opts__['otherConf'] || {})['chunk-step-byte-max'] || 3,
           useMultipart: (this.__opts__['otherConf'] || {})['use-multipart'] === 1,
+          addMassData: (this.__opts__['otherConf'] || {})['add-MassData'] === 1,
+          randomPrefix: parseInt((this.__opts__['otherConf'] || {})['random-Prefix']),
           useRandomVariable: (this.__opts__['otherConf'] || {})['use-random-variable'] === 1,
           timeout: parseInt((this.__opts__['otherConf'] || {})['request-timeout']),
           headers: (this.__opts__['httpConf'] || {})['headers'] || {},
@@ -382,6 +400,8 @@ class Base {
           chunkStepMin: (this.__opts__['otherConf'] || {})['chunk-step-byte-min'] || 2,
           chunkStepMax: (this.__opts__['otherConf'] || {})['chunk-step-byte-max'] || 3,
           useMultipart: (this.__opts__['otherConf'] || {})['use-multipart'] === 1,
+          addMassData: (this.__opts__['otherConf'] || {})['add-MassData'] === 1,
+          randomPrefix: parseInt((this.__opts__['otherConf'] || {})['random-Prefix']),
           useRandomVariable: (this.__opts__['otherConf'] || {})['use-random-variable'] === 1,
           timeout: parseInt((this.__opts__['otherConf'] || {})['request-timeout']),
           headers: (this.__opts__['httpConf'] || {})['headers'] || {},

@@ -760,7 +760,7 @@ module.exports = {
       !fs.existsSync(userencoder_path) ?
         fs.mkdirSync(userencoder_path) :
         null;
-      ['asp', 'aspx', 'php', 'custom'].map((t) => {
+      ['asp', 'aspx', 'php', 'jsp', 'custom'].map((t) => {
         !fs.existsSync(path.join(userencoder_path, `${t}`)) ?
           fs.mkdirSync(path.join(userencoder_path, `${t}`)) :
           null;
@@ -807,7 +807,7 @@ module.exports = {
       !fs.existsSync(userdecoder_path) ?
         fs.mkdirSync(userdecoder_path) :
         null;
-      ['asp', 'aspx', 'php', 'custom'].map((t) => {
+      ['asp', 'aspx', 'php', 'jsp', 'custom'].map((t) => {
         !fs.existsSync(path.join(userdecoder_path, `${t}`)) ?
           fs.mkdirSync(path.join(userdecoder_path, `${t}`)) :
           null;

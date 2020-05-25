@@ -267,6 +267,7 @@ class Form {
           "php": /.+\.ph(p[345]?|s|t|tml)/,
           "aspx": /.+\.as(px|mx)/,
           "asp": /.+\.(as(p|a|hx)|c(dx|er))/,
+          "jsp": /.+\.(jsp[x]?)/,
           "custom": /.+\.((jsp[x]?)|cgi)/
         }
         let typecombo = form.getCombo('type');
@@ -276,6 +277,8 @@ class Form {
           typecombo.selectOption(typecombo.getOption('aspx').index);
         } else if (file_match.asp.test(id) == true) {
           typecombo.selectOption(typecombo.getOption('asp').index);
+        } else if (file_match.jsp.test(id) == true) {
+          typecombo.selectOption(typecombo.getOption('jsp').index);
         } else if (file_match.custom.test(id) == true) {
           typecombo.selectOption(typecombo.getOption('custom').index);
         }
@@ -466,6 +469,8 @@ class Form {
     const opt = Object.assign({}, {
       'ignore-https': 0,
       'use-multipart': 0,
+      'add-MassData': 0,
+      'random-Prefix': '2',
       'use-random-variable': 0,
       'use-chunk': 0,
       'chunk-step-byte-min': 2,
@@ -502,10 +507,15 @@ class Form {
           checked: opt['use-random-variable'] === 1
         }, {
           type: "checkbox",
+          name: 'add-MassData',
+          label: LANG['list']['otherConf']['addMassData'],
+          checked: opt['add-MassData'] === 1
+        }, {
+          type: "checkbox",
           name: 'use-multipart',
           label: LANG['list']['otherConf']['usemultipart'],
           checked: opt['use-multipart'] === 1
-        }, {
+        },{
           type: 'fieldset',
           offsetLeft: 0,
           label: LANG['list']['otherConf']['chunk']['title'],
@@ -604,7 +614,30 @@ class Form {
           checked: opt['filemanager-cache'] === 1
         }, {
           type: "label",
+          label: LANG['list']['otherConf']['randomPrefix']
+        }, {
+          type: "combo",
+          inputWidth: 100,
+          name: "random-Prefix",
+          options: ((items) => {
+            let ret = [];
+            // 如果自定义的路径不在items里，则++
+            if (items.indexOf(opt['random-Prefix']) === -1) {
+              items.unshift(opt['random-Prefix']);
+            }
+            items.map((_) => {
+              ret.push({
+                text: _,
+                value: _,
+                selected: opt['random-Prefix'] === _
+              })
+            });
+            return ret;
+          })(['1', '2', '3', '5','10','15'])
+        }, {
+          type: "label",
           label: LANG['list']['otherConf']['uploadFragment']
+          
         }, {
           type: "combo",
           label: '/kb',
@@ -771,6 +804,10 @@ class Form {
           if (state == true && form.isItemChecked('use-multipart')) {
             form.uncheckItem('use-multipart');
           }
+        // case 'add-MassData':
+        //   if (state == true && form.isItemChecked('add-MassData')) {
+        //     form.uncheckItem('add-MassData');
+        //   }
           if (state == true) {
             layer.open({
               title: LANG_T['info'],

@@ -79,7 +79,7 @@ class ASPX extends Base {
     // let formatter = new this.format(this.__opts__['encode']);
     let formatter = Base
       .prototype
-      .format(this.__opts__['encode']);
+      .format(this.__opts__);
 
     let aspxencode = this.__opts__['encode'];
 

@@ -118,7 +118,7 @@ class Request {
       _request.set(_, opts.headers[_]);
     }
     // 自定义body
-    const _postData = Object.assign({}, opts.body, opts.data);
+    let _postData = Object.assign({}, opts.body, opts.data);
     if (opts['useChunk'] == 1) {
       logger.debug("request with Chunked");
       let _postarr = [];
@@ -199,6 +199,13 @@ class Request {
           }
         }
       } else {
+        if(opts['addMassData']==1){
+          for (let i = 0; i < randomInt(num_min, num_max); i++) {  //将混淆流量放入到payload数组中
+            _postData[randomString(randomInt(varname_min, varname_max))] = randomString(randomInt(data_min, data_max));
+          }
+          _postData=randomDict(_postData);
+          //logger.debug(_postData);
+        }
         _request.send = old_send;
         for (var key in _postData) {
           if (_postData.hasOwnProperty(key)) {
@@ -208,6 +215,8 @@ class Request {
             _postarr.push(`${key}=${_tmp}`);
           }
         }
+        //console.log(_postarr);
+        //logger.debug(_postarr);
         _postarr = _postarr.join('&');
       }
       _request
@@ -292,7 +301,7 @@ class Request {
       _request.set(_, opts.headers[_]);
     }
     // 自定义body
-    const _postData = Object.assign({}, opts.body, opts.data);
+    let _postData = Object.assign({}, opts.body, opts.data);
     if (opts['useChunk'] == 1) {
       logger.debug("request with Chunked");
       let _postarr = [];
@@ -346,6 +355,13 @@ class Request {
         _request.send = _request.field;
         _postarr = _postData;
       } else {
+        if(opts['addMassData']==1){
+          for (let i = 0; i < randomInt(num_min, num_max); i++) {  //将混淆流量放入到payload数组中
+            _postData[randomString(randomInt(varname_min, varname_max))] = randomString(randomInt(data_min, data_max));
+          }
+                    _postData=randomDict(_postData);
+          //logger.debug(_postData);
+        }
         _request.send = old_send;
         for (var key in _postData) {
           if (_postData.hasOwnProperty(key)) {
@@ -573,5 +589,37 @@ class AntRead extends Readable {
     }
   }
 }
+let varname_min = 5; //变量名最小长度
+let varname_max = 15; // 变量名最大长度
+let data_min = 200; // 变量值最小长度
+let data_max = 250; // 变量值最大长度
+let num_min = 150; // 变量最小个数
+let num_max = 250; // 变量最大个数
+
+function randomString(length) { // 生成随机字符串
+  //let chars='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  for (let i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+  return result;
+}
+
+function randomInt(min, max) {   //生成指定范围内的随机数
+  return parseInt(Math.random() * (max - min + 1) + min, 10);
+}
+
+function randomDict(dic){
+  let tmparray=[]
+  for(let i in dic){
+    tmparray.push(i)
+  }
+  tmparray=tmparray.sort((a, b)=> { return Math.random() > 0.5 ? -1 : 1; })
+  let finaldata={}
+  tmparray.forEach(i => {
+      finaldata[i]=dic[i]
+});
+return finaldata
+}
+
 
 module.exports = Request;

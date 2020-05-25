@@ -2,6 +2,24 @@
 > 有空会补补BUG、添添新功能。    
 > 同时也欢迎大家的参与！感谢各位朋友的支持！ .TAT.
 
+## `v2.1.9-dev`
+
+### 后端模块
+
+* request 增加垃圾数据填充功能 (thx: @yzddmr6)
+
+> 支持 form-data 和 multipart 模式
+
+![mass_1.png](https://i.loli.net/2020/01/19/32HiSUvjPrMwfy5.png)
+
+![mass_2.png](https://i.loli.net/2020/01/19/EaKruhcHklPFAe7.png)
+
+![mass_3.png](https://i.loli.net/2020/01/19/UOX2HKuYyJQS7R1.png)
+
+该模块不会改变 payload, 仅会填充垃圾数据, 部分基于 nginx 二次开发的 WAF 会因为过多参数导致 WAF 获取不到后面的数据，从而达到 Bypass 目的。
+
+测试 paper 参见: [yzddmr6的 Blog —— 蚁剑改造计划之增加垃圾数据](https://yzddmr6.tk/posts/antsword-diy-1/)
+
 ## 2019/12/04 `v(2.1.8.1)`
 
 * Fix ViewSite security issue thx @imagemlt
