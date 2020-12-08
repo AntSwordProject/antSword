@@ -73,6 +73,7 @@ class Base {
    */
   rsaEncrypt() {
     let key = new NodeRSA();
+    key.setOptions({encryptionScheme: 'pkcs1'});
     try {
       let priKey = fs.readFileSync(path.join(remote.process.env.AS_WORKDIR, `antData/key_rsa`));
       if (priKey.length > 0) {
