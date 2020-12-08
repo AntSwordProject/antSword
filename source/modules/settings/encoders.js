@@ -193,6 +193,7 @@ class Encoders {
     combobox.put("asp", "ASP");
     combobox.put("aspx", "ASPX");
     combobox.put("php", "PHP");
+    combobox.put("jsp", "JSP");
     combobox.put("custom", "CUSTOM");
 
     grid.attachEvent("onEditCell", function (stage, rId, cInd, nValue, oValue) {
@@ -812,12 +813,14 @@ module.exports = {
         asp: [],
         aspx: [],
         php: [],
+        jsp:[],
         custom: []
       };
       var decoders_path = {
         asp: [],
         aspx: [],
         php: [],
+        jsp:[],
         custom: []
       };
       let userdecoder_path = path.join(remote.process.env.AS_WORKDIR, 'antData/encoders');
