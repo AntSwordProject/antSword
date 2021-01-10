@@ -60,6 +60,11 @@ class Encoders {
         type: 'button',
         text: "PHP"
       }, {
+        id: 'new_jsp',
+        icon: 'file-code-o',
+        type: 'button',
+        text: "JSP"
+      }, {
         type: 'separator'
       }, {
         id: 'new_custom',
@@ -85,6 +90,11 @@ class Encoders {
         icon: 'file-code-o',
         type: 'button',
         text: "PHP"
+      },{
+        id: 'new_jsp_decoder',
+        icon: 'file-code-o',
+        type: 'button',
+        text: "JSP"
       }, {
         type: 'separator'
       }, {
@@ -129,6 +139,9 @@ class Encoders {
         case "new_aspx":
           that.createEncoder(id);
           break;
+        case "new_jsp":
+          that.createEncoder(id);
+          break;
         case "new_php":
         case "new_php_rsa":
           that.createEncoder(id);
@@ -137,6 +150,9 @@ class Encoders {
           that.createEncoder(id);
           break;
         case "new_php_decoder":
+          that.createEncoder(id, 'decoder');
+          break;
+        case "new_jsp_decoder":
           that.createEncoder(id, 'decoder');
           break;
         case "new_custom_decoder":
@@ -177,6 +193,7 @@ class Encoders {
     combobox.put("asp", "ASP");
     combobox.put("aspx", "ASPX");
     combobox.put("php", "PHP");
+    combobox.put("jsp", "JSP");
     combobox.put("custom", "CUSTOM");
 
     grid.attachEvent("onEditCell", function (stage, rId, cInd, nValue, oValue) {
@@ -747,12 +764,14 @@ module.exports = {
         asp: [],
         aspx: [],
         php: [],
+        jsp: [],
         custom: []
       };
       var encoders_path = {
         asp: [],
         aspx: [],
         php: [],
+        jsp: [],
         custom: []
       };
       let userencoder_path = path.join(remote.process.env.AS_WORKDIR, 'antData/encoders');
@@ -794,12 +813,14 @@ module.exports = {
         asp: [],
         aspx: [],
         php: [],
+        jsp:[],
         custom: []
       };
       var decoders_path = {
         asp: [],
         aspx: [],
         php: [],
+        jsp:[],
         custom: []
       };
       let userdecoder_path = path.join(remote.process.env.AS_WORKDIR, 'antData/encoders');
