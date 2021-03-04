@@ -48,7 +48,7 @@ class JSP extends Base {
   }
 
   get decoders() {
-    return ['default'];
+    return ['default','base64','aes'];
   }
 
   /**
@@ -57,6 +57,11 @@ class JSP extends Base {
    * @return {Promise}     返回一个Promise操作对象
    */
   complete(data, force_default = false) {
+    // aes 加密key
+    let aeskey = this.__opts__['pwd'];
+    let buff = Buffer.alloc(16, 'a');
+    buff.write(aeskey,0);
+    aeskey = buff.toString();
     // 分隔符号
     let tag_s, tag_e;
     if (this.__opts__['otherConf'].hasOwnProperty('use-custom-datatag') && this.__opts__['otherConf']['use-custom-datatag'] == 1 && this.__opts__['otherConf']['custom-datatag-tags']) {
@@ -71,6 +76,10 @@ class JSP extends Base {
     }
     data['_'] = this.replaceClassStringVar(data['_'], '->|', tag_s);
     data['_'] = this.replaceClassStringVar(data['_'], '|<-', tag_e);
+    //获取解码名字放入变量中
+    data['_'] = this.replaceClassStringVar(data['_'], 'antswordDefault', this.__opts__["decoder"]);
+    //获取定义好的加密key放在变量中
+    data['_'] = this.replaceClassStringVar(data['_'], 'antswordAESKey', aeskey);
     // 使用编码器进行处理并返回
     return this.encodeComplete(tag_s, tag_e, data);
   }
