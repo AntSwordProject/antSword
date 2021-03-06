@@ -412,9 +412,15 @@ class PHP {
           })
           break;
         case 'postgresql':
+          form.setFormData({
+            host: 'localhost:5432:postgres',
+            user: 'postgres',
+            passwd: '',
+          });
+          break;
         case 'postgresql_pdo':
           form.setFormData({
-            host: 'localhost:5432',
+            host: 'localhost:5432:postgres',
             user: 'postgres',
             passwd: '',
           });
