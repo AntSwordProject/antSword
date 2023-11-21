@@ -15,7 +15,7 @@ class Base {
    * 是否支持 Raw Body
    */
   static get supportRawBody() {
-      return false;
+      return true;
     }
     /**
      * 初始化

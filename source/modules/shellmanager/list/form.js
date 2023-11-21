@@ -265,7 +265,8 @@ class Form {
       if (_ == "url") {
         let file_match = {
           "php": /.+\.ph(p[345]?|s|t|tml)/,
-          "aspx": /.+\.as(px|mx)/,
+          "aspx": /.+\.as(px)/,
+          "asmx": /.+\.as(mx)/,
           "asp": /.+\.(as(p|a|hx)|c(dx|er))/,
           "jsp": /.+\.(jsp[x]?)/,
           "custom": /.+\.((jsp[x]?)|cgi)/
