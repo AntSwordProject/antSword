@@ -8,7 +8,7 @@
 const Files = require("./files");
 const Tasks = require("./tasks");
 const Folder = require("./folder");
-const logger = require('../logger')
+const logger = require("../logger");
 const ENCODES = require("../../base/encodes");
 
 const fs = require("fs");
@@ -266,7 +266,7 @@ class FileManager {
     }
   }
 
-  // 删除文件/目录 TODO(zyx)
+  // 删除文件/目录
   deleteFile(files) {
     let self = this;
 
@@ -295,9 +295,8 @@ class FileManager {
                 let ret = res["text"];
                 this.files.cell.progressOff();
                 if (ret === "1") {
-                  const logMessage = `File deleted successfully: ${path}`;
-                  console.log(logMessage);
-                  logger.appendToLogFile(logMessage);// 写入到日志文件
+                  const logMessage = `delete_file ${path}`;
+                  logger.appendToLogFile(logMessage);
                   toastr.success(
                     LANG["delete"]["success"](path),
                     LANG_T["success"]
@@ -308,8 +307,7 @@ class FileManager {
                   const logMessage = `Failed to delete file: ${path}, Error: ${
                     ret === "0" ? false : ret
                   }`;
-                  console.error(logMessage);
-                  logger.appendToLogFile(logMessage);; // 写入到日志文件
+                  logger.appendToLogFile(logMessage); // 写入到日志文件
 
                   toastr.error(
                     LANG["delete"]["error"](path, ret === "0" ? false : ret),
@@ -326,7 +324,7 @@ class FileManager {
                   LANG["delete"]["error"](path, err),
                   LANG_T["error"]
                 );
-                logger.appendToLogFile(logMessage);; // 写入到日志文件
+                logger.appendToLogFile(logMessage); // 写入到日志文件
               });
           })(p);
         });
@@ -357,6 +355,8 @@ class FileManager {
           // 删除缓存
           delete this.files.Clipboard[name];
           toastr.success(LANG["paste"]["success"](name), LANG_T["success"]);
+          const logMessage = `copy_file from ${source} to ${target}`;
+          logger.appendToLogFile(logMessage); // 写入到日志文件
         } else {
           toastr.error(
             LANG["paste"]["error"](name, ret === "0" ? false : ret),
@@ -395,7 +395,7 @@ class FileManager {
             if (ret === "1") {
               this.files.refreshPath();
               toastr.success(LANG["rename"]["success"], LANG_T["success"]);
-              const logMessage = `File/Direcotry ${name} renamed to ${value}`;
+              const logMessage = `rename ${name} to ${value}`;
               logger.appendToLogFile(logMessage);
             } else {
               toastr.error(
@@ -412,7 +412,7 @@ class FileManager {
     );
   }
 
-  // 新建目录 TODO(zyx)
+  // 新建目录
   createFolder() {
     layer.prompt(
       {
@@ -436,9 +436,8 @@ class FileManager {
                 LANG["createFolder"]["success"](value),
                 LANG_T["success"]
               );
-              const logMessage = `create folder ${value}`;
+              const logMessage = `mkdir ${value}`;
               logger.appendToLogFile(logMessage);
-
             } else {
               toastr.error(
                 LANG["createFolder"]["error"](value, ret === "0" ? false : ret),
@@ -457,7 +456,7 @@ class FileManager {
     );
   }
 
-  // 新建文件 TODO(zyx)
+  // 新建文件
   createFile() {
     layer.prompt(
       {
@@ -484,8 +483,8 @@ class FileManager {
                 LANG["createFile"]["success"](value),
                 LANG_T["success"]
               );
-              const logMessage = `create file ${value}`;
-              logger.appendToLogFile(logMessage)
+              const logMessage = `create_file: ${path}`;
+              logger.appendToLogFile(logMessage);
             } else {
               toastr.error(
                 LANG["createFile"]["error"](value, ret === "0" ? false : ret),
@@ -504,7 +503,7 @@ class FileManager {
     );
   }
 
-  // 重命名文件/夹 TODO(zyx)
+  // 重命名文件/夹 修改时间戳
   retimeFile(name, oldtime) {
     layer.prompt(
       {
@@ -538,6 +537,8 @@ class FileManager {
                 LANG["retime"]["success"](name),
                 LANG_T["success"]
               );
+              const logMessage = `retime ${name} to ${value}`;
+              logger.appendToLogFile(logMessage);
             } else {
               toastr.error(
                 LANG["retime"]["error"](name, ret === "0" ? false : ret),
@@ -595,6 +596,8 @@ class FileManager {
             if (ret === "1") {
               this.files.refreshPath();
               toastr.success(LANG["chmod"]["success"](name), LANG_T["success"]);
+              const logMessage = `chmod ${name} to ${value}`;
+              logger.appendToLogFile(logMessage);
             } else {
               toastr.error(
                 LANG["chmod"]["error"](name, ret === "0" ? false : ret),
@@ -651,6 +654,8 @@ class FileManager {
         if (_size === size) {
           win.setText(`Preview File: ${antSword.noxss(remote_path)}`);
           let buff = fs.readFileSync(savepath);
+          const logMessage = `read_file ${remote_path}`;
+          logger.appendToLogFile(logMessage);
           switch (filemime) {
             default:
               let data = Buffer.from(buff).toString("base64");
@@ -717,8 +722,8 @@ class FileManager {
                 LANG["download"]["success"](name),
                 LANG_T["success"]
               );
-              const logMessage = `File download successfully: ${path}`;
-              logger.appendToLogFile(logMessage);// 写入到日志文件
+              const logMessage = `read_file ${remote_path}`;
+              logger.appendToLogFile(logMessage);
             } else {
               throw Error(`SizeErr: ${_size} != ${size}`);
               // task.failed(LANG['download']['task']['error']())
@@ -785,6 +790,8 @@ class FileManager {
               LANG["download"]["success"](name),
               LANG_T["success"]
             );
+            const logMessage = `read_file ${remote_path}`;
+            logger.appendToLogFile(logMessage);
             // }else if (_size === 21) {   task.failed('len=' + _size);
           } else {
             throw Error(`SizeErr: ${_size} != ${item.size}`);
@@ -849,8 +856,13 @@ class FileManager {
               task.success(LANG["wget"]["task"]["success"]);
               let _ = path.substr(0, path.lastIndexOf("/") + 1);
               this.files.refreshPath(_ === self.path ? false : _);
+              //todo(zyx): write_file?
+              const logMessage = `Wget operation successful: ${url} -> ${path}`;
+              logger.appendToLogFile(logMessage);
             } else {
               task.failed(LANG["wget"]["task"]["failed"](ret));
+              const logMessage = `Wget operation failed: ${url} -> ${path} - Error: ${ret}`;
+              logger.appendToLogFile(logMessage);
             }
           })
           .catch((err) => {
@@ -944,7 +956,7 @@ class FileManager {
                 if (_b) {
                   res(_b);
                 } else {
-                  // 上传完毕
+                  // 单个上传完毕
                   task.success(LANG["upload"]["task"]["success"]);
                   toastr.success(
                     LANG["upload"]["success"](fileName),
@@ -952,17 +964,8 @@ class FileManager {
                   );
                   // 刷新缓存
                   this.files.refreshPath(path === this.path ? "" : path);
-
-                  try {
-                    const logMessage = `File uploaded successfully: ${fileName}`
-                    logger.appendToLogFile(logMessage);
-                    console.log("File uploaded successfully.");
-                  } catch (err) {
-                    console.error(
-                      `Error appending to ${logFilePath}:`,
-                      err.message
-                    );
-                  }
+                  const logMessage = `write_file ${path + fileName}`;
+                  logger.appendToLogFile(logMessage);
                   // 继续上传
                   return upload();
                 }
@@ -1207,6 +1210,8 @@ class FileManager {
                 LANG["editor"]["success"](path),
                 LANG_T["success"]
               );
+              const logMessage = `write_file: ${path}`;
+              logger.appendToLogFile(logMessage);
               // 刷新目录（显示更改时间、大小等）
               self.files.refreshPath();
             } else {
@@ -1235,6 +1240,8 @@ class FileManager {
             })
           )
           .then((res) => {
+            const logMessage = `read_file ${path}`;
+            logger.appendToLogFile(logMessage);
             win.progressOff();
             name = path.substr(path.lastIndexOf("/") + 1);
             if (openfileintab == false) {
@@ -1284,6 +1291,8 @@ class FileManager {
         })
       )
       .then((res) => {
+        const logMessage = `read_file ${path}`;
+        logger.appendToLogFile(logMessage);
         let ret = antSword.unxss(res["text"], false);
         codes = Buffer.from(antSword.unxss(res["buff"].toString(), false));
         let encoding = res["encoding"] || this.opts["encode"];
