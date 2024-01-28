@@ -1,4 +1,4 @@
-// logger.js
+// attacklogger.js
 const fs = require('fs');
 function appendToLogFile(message, filePath = "/home/kali/桌面/antSword/logs/logfile.log") {
     const logMessage = `${new Date().toLocaleString()} - ${message}\n`;

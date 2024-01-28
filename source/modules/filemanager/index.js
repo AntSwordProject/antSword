@@ -8,7 +8,7 @@
 const Files = require("./files");
 const Tasks = require("./tasks");
 const Folder = require("./folder");
-const logger = require("../logger");
+const attacklogger = require("../attacklogger");
 const ENCODES = require("../../base/encodes");
 
 const fs = require("fs");
@@ -296,7 +296,7 @@ class FileManager {
                 this.files.cell.progressOff();
                 if (ret === "1") {
                   const logMessage = `delete_file ${path}`;
-                  logger.appendToLogFile(logMessage);
+                  attacklogger.appendToLogFile(logMessage);
                   toastr.success(
                     LANG["delete"]["success"](path),
                     LANG_T["success"]
@@ -307,7 +307,7 @@ class FileManager {
                   const logMessage = `Failed to delete file: ${path}, Error: ${
                     ret === "0" ? false : ret
                   }`;
-                  logger.appendToLogFile(logMessage); // 写入到日志文件
+                  attacklogger.appendToLogFile(logMessage); // 写入到日志文件
 
                   toastr.error(
                     LANG["delete"]["error"](path, ret === "0" ? false : ret),
@@ -324,7 +324,7 @@ class FileManager {
                   LANG["delete"]["error"](path, err),
                   LANG_T["error"]
                 );
-                logger.appendToLogFile(logMessage); // 写入到日志文件
+                attacklogger.appendToLogFile(logMessage); // 写入到日志文件
               });
           })(p);
         });
@@ -356,7 +356,7 @@ class FileManager {
           delete this.files.Clipboard[name];
           toastr.success(LANG["paste"]["success"](name), LANG_T["success"]);
           const logMessage = `copy_file from ${source} to ${target}`;
-          logger.appendToLogFile(logMessage); // 写入到日志文件
+          attacklogger.appendToLogFile(logMessage); // 写入到日志文件
         } else {
           toastr.error(
             LANG["paste"]["error"](name, ret === "0" ? false : ret),
@@ -396,7 +396,7 @@ class FileManager {
               this.files.refreshPath();
               toastr.success(LANG["rename"]["success"], LANG_T["success"]);
               const logMessage = `rename ${name} to ${value}`;
-              logger.appendToLogFile(logMessage);
+              attacklogger.appendToLogFile(logMessage);
             } else {
               toastr.error(
                 LANG["rename"]["error"](ret === "0" ? false : ret),
@@ -437,7 +437,7 @@ class FileManager {
                 LANG_T["success"]
               );
               const logMessage = `mkdir ${value}`;
-              logger.appendToLogFile(logMessage);
+              attacklogger.appendToLogFile(logMessage);
             } else {
               toastr.error(
                 LANG["createFolder"]["error"](value, ret === "0" ? false : ret),
@@ -484,7 +484,7 @@ class FileManager {
                 LANG_T["success"]
               );
               const logMessage = `create_file: ${path}`;
-              logger.appendToLogFile(logMessage);
+              attacklogger.appendToLogFile(logMessage);
             } else {
               toastr.error(
                 LANG["createFile"]["error"](value, ret === "0" ? false : ret),
@@ -538,7 +538,7 @@ class FileManager {
                 LANG_T["success"]
               );
               const logMessage = `retime ${name} to ${value}`;
-              logger.appendToLogFile(logMessage);
+              attacklogger.appendToLogFile(logMessage);
             } else {
               toastr.error(
                 LANG["retime"]["error"](name, ret === "0" ? false : ret),
@@ -597,7 +597,7 @@ class FileManager {
               this.files.refreshPath();
               toastr.success(LANG["chmod"]["success"](name), LANG_T["success"]);
               const logMessage = `chmod ${name} to ${value}`;
-              logger.appendToLogFile(logMessage);
+              attacklogger.appendToLogFile(logMessage);
             } else {
               toastr.error(
                 LANG["chmod"]["error"](name, ret === "0" ? false : ret),
@@ -655,7 +655,7 @@ class FileManager {
           win.setText(`Preview File: ${antSword.noxss(remote_path)}`);
           let buff = fs.readFileSync(savepath);
           const logMessage = `read_file ${remote_path}`;
-          logger.appendToLogFile(logMessage);
+          attacklogger.appendToLogFile(logMessage);
           switch (filemime) {
             default:
               let data = Buffer.from(buff).toString("base64");
@@ -723,7 +723,7 @@ class FileManager {
                 LANG_T["success"]
               );
               const logMessage = `read_file ${remote_path}`;
-              logger.appendToLogFile(logMessage);
+              attacklogger.appendToLogFile(logMessage);
             } else {
               throw Error(`SizeErr: ${_size} != ${size}`);
               // task.failed(LANG['download']['task']['error']())
@@ -791,7 +791,7 @@ class FileManager {
               LANG_T["success"]
             );
             const logMessage = `read_file ${remote_path}`;
-            logger.appendToLogFile(logMessage);
+            attacklogger.appendToLogFile(logMessage);
             // }else if (_size === 21) {   task.failed('len=' + _size);
           } else {
             throw Error(`SizeErr: ${_size} != ${item.size}`);
@@ -858,11 +858,11 @@ class FileManager {
               this.files.refreshPath(_ === self.path ? false : _);
               //todo(zyx): write_file?
               const logMessage = `Wget operation successful: ${url} -> ${path}`;
-              logger.appendToLogFile(logMessage);
+              attacklogger.appendToLogFile(logMessage);
             } else {
               task.failed(LANG["wget"]["task"]["failed"](ret));
               const logMessage = `Wget operation failed: ${url} -> ${path} - Error: ${ret}`;
-              logger.appendToLogFile(logMessage);
+              attacklogger.appendToLogFile(logMessage);
             }
           })
           .catch((err) => {
@@ -965,7 +965,7 @@ class FileManager {
                   // 刷新缓存
                   this.files.refreshPath(path === this.path ? "" : path);
                   const logMessage = `write_file ${path + fileName}`;
-                  logger.appendToLogFile(logMessage);
+                  attacklogger.appendToLogFile(logMessage);
                   // 继续上传
                   return upload();
                 }
@@ -1211,7 +1211,7 @@ class FileManager {
                 LANG_T["success"]
               );
               const logMessage = `write_file: ${path}`;
-              logger.appendToLogFile(logMessage);
+              attacklogger.appendToLogFile(logMessage);
               // 刷新目录（显示更改时间、大小等）
               self.files.refreshPath();
             } else {
@@ -1241,7 +1241,7 @@ class FileManager {
           )
           .then((res) => {
             const logMessage = `read_file ${path}`;
-            logger.appendToLogFile(logMessage);
+            attacklogger.appendToLogFile(logMessage);
             win.progressOff();
             name = path.substr(path.lastIndexOf("/") + 1);
             if (openfileintab == false) {
@@ -1292,7 +1292,7 @@ class FileManager {
       )
       .then((res) => {
         const logMessage = `read_file ${path}`;
-        logger.appendToLogFile(logMessage);
+        attacklogger.appendToLogFile(logMessage);
         let ret = antSword.unxss(res["text"], false);
         codes = Buffer.from(antSword.unxss(res["buff"].toString(), false));
         let encoding = res["encoding"] || this.opts["encode"];
