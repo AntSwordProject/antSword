@@ -168,7 +168,27 @@ const antSword = window.antSword = {
 };
 
 //核心模块类型列表
-antSword['core_types'] = ['asp', 'aspx', 'aspxraw', 'aspxcsharp', 'php', 'php4', 'phpraw', 'jsp', 'jspjs', 'cmdlinux', 'pswindows', 'custom'];
+// antSword['core_types'] = ['asp', 'aspx', 'aspxraw', 'aspxcsharp', 'php', 'php4', 'phpraw', 'jsp', 'jspjs', 'cmdlinux', 'pswindows', 'custom'];
+
+// 自动加载核心模块类型列表
+antSword['core_types'] = [];
+
+let coreHome = path.join(remote.process.env.AS_WORKDIR, 'source/core');
+
+fs
+  .readdirSync(coreHome)
+  .map((_) => {
+    let corePath = path.join(coreHome, _);
+    // 如果不是目录，则跳过
+    if (!fs.lstatSync(corePath).isDirectory()) {
+      return
+    }
+    try {
+      antSword['core_types'].push(_);
+    } catch (error) {
+      return
+    }
+  });
 
 // 加载核心模板
 antSword['core'] = require('./core/');
