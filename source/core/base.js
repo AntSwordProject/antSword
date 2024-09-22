@@ -316,7 +316,8 @@ class Base {
       opts: this.__opts__,
       rsa: this.rsaEncrypt()
     }
-    let useRaw = this.__opts__['type'].endsWith("raw") || (this.constructor.supportRawBody && (this.__opts__['otherConf'] || {})['use-raw-body'] === 1);
+    // let useRaw = this.__opts__['type'].endsWith("raw") || (this.constructor.supportRawBody && (this.__opts__['otherConf'] || {})['use-raw-body'] === 1);
+    let useRaw =  this.constructor.supportRawBody && (this.__opts__['otherConf'] || {})['use-raw-body'] === 1;
 
     let useWebSocket = (this.__opts__['url'].startsWith('ws://') || this.__opts__['url'].startsWith('wss://'));
 
