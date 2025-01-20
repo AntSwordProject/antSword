@@ -20,7 +20,7 @@ module.exports = (arg1, arg2, arg3) => ({
   },
 
   copy: {
-    _: `$m=get_magic_quotes_gpc();$fc=base64_decode(substr("#{newbase64::path}",#randomPrefix#));$fp=base64_decode(substr("#{newbase64::target}",#randomPrefix#));function xcopy($src,$dest){if(is_file($src)){if(!copy($src,$dest))return false;else return true;}$m=@dir($src);if(!is_dir($dest))if(!@mkdir($dest))return false;while($f=$m->read()){$isrc=$src.chr(47).$f;$idest=$dest.chr(47).$f;if((is_dir($isrc))&&($f!=chr(46))&&($f!=chr(46).chr(46))){if(!xcopy($isrc,$idest))return false;}else if(is_file($isrc)){if(!copy($isrc,$idest))return false;}}return true;}echo(xcopy($fc,$fp)?"1":"0");`,
+    _: `$fc=base64_decode(substr("#{newbase64::path}",#randomPrefix#));$fp=base64_decode(substr("#{newbase64::target}",#randomPrefix#));function xcopy($src,$dest){if(is_file($src)){if(!copy($src,$dest))return false;else return true;}$m=@dir($src);if(!is_dir($dest))if(!@mkdir($dest))return false;while($f=$m->read()){$isrc=$src.chr(47).$f;$idest=$dest.chr(47).$f;if((is_dir($isrc))&&($f!=chr(46))&&($f!=chr(46).chr(46))){if(!xcopy($isrc,$idest))return false;}else if(is_file($isrc)){if(!copy($isrc,$idest))return false;}}return true;}echo(xcopy($fc,$fp)?"1":"0");`,
   },
 
   download_file: {

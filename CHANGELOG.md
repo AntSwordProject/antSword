@@ -19,6 +19,7 @@
 
 ### 核心
 
+* 修复 PHP8 下 `get_magic_quotes_gpc` 函数废弃导致的问题
 * 修复 PHP/PHP4 当前目录不可写时 bypass open_basedir 失败的 Bug
 * 新增 PHPRAW 类型, 该类型支持的 WebShell 类似如下代码:
 
