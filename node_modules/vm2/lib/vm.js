@@ -44,6 +44,9 @@ const {
 const {
 	VMScript
 } = require('./script');
+const {
+	inspect
+} = require('util');
 
 const objectDefineProperties = Object.defineProperties;
 
@@ -364,6 +367,8 @@ class VM extends EventEmitter {
 			_compiler: {__proto__: null, value: resolvedCompiler},
 			_allowAsync: {__proto__: null, value: allowAsync}
 		});
+
+		this.readonly(inspect);
 
 		// prepare global sandbox
 		if (sandbox) {
