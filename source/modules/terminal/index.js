@@ -6,6 +6,40 @@
 const LANG = antSword['language']['terminal'];
 const LANG_T = antSword['language']['toastr'];
 
+/** Banner / 提示符等非远端命令用的短文本：去控制符、限长 */
+function sanitizePlainInfo(raw, maxLen) {
+  if (raw == null) return '';
+  let s = String(raw);
+  if (s.length > maxLen) s = s.slice(0, maxLen);
+  s = s.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, '');
+  s = s.replace(/[\n\r\t\v\f]+/g, ' ').replace(/ +/g, ' ').trim();
+  return s;
+}
+
+/**
+ * 路径展示合法化（仅用于 UI，不改写 this.path 以免 cd 与真实 cwd 不一致）
+ * Windows: 去掉文件名非法字符 " < > | ? * ，盘符后其余冒号替换（避免流名等混淆展示）
+ * 类 Unix: 仅去掉控制字符与 NUL；不删 * ? 等合法文件名字符
+ */
+function sanitizePathForDisplay(raw, isWin) {
+  if (raw == null) return '';
+  let s = String(raw);
+  if (s.length > 4096) s = s.slice(0, 4096);
+  s = s.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, '');
+  s = s.replace(/[\n\r\t\v\f]+/g, ' ').replace(/ +/g, ' ').trim();
+  if (!s) return '';
+  if (isWin) {
+    s = s.replace(/["<>|?*]/g, '\uFFFD');
+    const m = s.match(/^([A-Za-z])(:)(.*)$/);
+    if (m) {
+      s = m[1] + m[2] + m[3].replace(/:/g, '\uFFFD');
+    } else {
+      s = s.replace(/:/g, '\uFFFD');
+    }
+  }
+  return s;
+}
+
 class Terminal {
 
   constructor(opts, options = {}) {
@@ -175,12 +209,14 @@ class Terminal {
     this.isWin = !(infoPath.substr(0, 1) === '/')
     this.path = infoPath;
 
-    // 组合banner
-    banner += `\n[[b;#99A50D;]${LANG['banner']['path']}]: [[;#C3C3C3;]${antSword.noxss(infoPath)}]`;
-    banner += `\n[[b;#99A50D;]${LANG['banner']['drive']}]: [[;#C3C3C3;]${antSword.noxss(infoDrive)}]`;
+    // 组合banner（路径类做展示层合法化，与发往远端的 this.path 解耦）
+    const pathShow = sanitizePathForDisplay(infoPath, this.isWin);
+    const driveShow = sanitizePathForDisplay(infoDrive, this.isWin);
+    banner += `\n[[b;#99A50D;]${LANG['banner']['path']}]: [[;#C3C3C3;]${antSword.noxssTerminal(pathShow)}]`;
+    banner += `\n[[b;#99A50D;]${LANG['banner']['drive']}]: [[;#C3C3C3;]${antSword.noxssTerminal(driveShow)}]`;
     if (info.length === 4) {
-      banner += `\n[[b;#99A50D;]${LANG['banner']['system']}]: [[;#C3C3C3;]${antSword.noxss(infoSystem)}]`;
-      banner += `\n[[b;#99A50D;]${LANG['banner']['user']}]: [[;#C3C3C3;]${antSword.noxss(infoUser)}]`;
+      banner += `\n[[b;#99A50D;]${LANG['banner']['system']}]: [[;#C3C3C3;]${antSword.noxssTerminal(sanitizePlainInfo(infoSystem, 512))}]`;
+      banner += `\n[[b;#99A50D;]${LANG['banner']['user']}]: [[;#C3C3C3;]${antSword.noxssTerminal(sanitizePlainInfo(infoUser, 256))}]`;
     }
 
     // 初始化终端
@@ -240,7 +276,7 @@ class Terminal {
                   var r = parseInt(line[1]) === 1 ?
                     '[[b;#15af63;]OK]' :
                     '[[b;#E80000;]FAIL]';
-                  result += `${line[0]}\t\t\t${r}\n`;
+                  result += `${antSword.noxssTerminal(line[0], false)}\t\t\t${r}\n`;
                 }
               });
             term.echo(result);
@@ -257,7 +293,7 @@ class Terminal {
           .trim();
         if (sessbin.length > 0) {
           self.sessbin = sessbin;
-          term.echo(LANG['ascmd']['ascmd'](antSword.noxss(self.sessbin)));
+          term.echo(LANG['ascmd']['ascmd'](self.sessbin));
         } else {
           term.echo(LANG['ascmd']['ashelp']);
         }
@@ -301,7 +337,7 @@ class Terminal {
           this.asenvironmet[k] = v;
         } else {
           Object.keys(this.asenvironmet).map((k) => {
-            term.echo(`${antSword.noxss(k)}=${antSword.noxss(this.asenvironmet[k])}`);
+            term.echo(`${antSword.noxssTerminal(k, false)}=${antSword.noxssTerminal(this.asenvironmet[k], false)}`);
           });
         }
         return;
@@ -315,7 +351,7 @@ class Terminal {
         .cache
         .get(cacheTag);
       if ((this.opts.otherConf || {})['terminal-cache'] === 1 && cacheCmd) {
-        term.echo(antSword.noxss(cacheCmd, false));
+        term.echo(antSword.noxssTerminal(cacheCmd, false));
         return term.resume();
       };
       // 获取自定义执行路径
@@ -377,7 +413,7 @@ class Terminal {
             output = output.replace(_, '');
           });
           if (output.length > 0) {
-            term.echo(antSword.noxss(output, false));
+            term.echo(antSword.noxssTerminal(output, false));
             // 保存最大100kb数据
             if (output.length < (1024 * 1024)) {
               this
@@ -397,6 +433,8 @@ class Terminal {
       prompt: this.parsePrompt(infoUser),
       numChars: 2048,
       exit: false,
+      // 命令回显按纯文本展示，不把 http(s):// 等自动包成可点击链接
+      convertLinks: false,
       // < 1.0.0 时使用3个参数 completion: (term, value, callback) => {}
       completion: (value, callback) => {
         callback(['asenv', 'ashelp', 'ascmd', 'aslistcmd', 'aspowershell', 'aswinmode', 'quit', 'exit'].concat(
@@ -469,11 +507,17 @@ class Terminal {
    * @return {String}      term输出字符串
    */
   parsePrompt(user) {
-    return antSword.noxss(this.isWin ?
-      `[[b;white;]${this.path.replace(/\//g, '\\')}> ]` :
-      (user ?
-        `([[b;#E80000;]${user}]:[[;#0F93D2;]` :
-        '[[;0F93D2;]') + this.path + ']) $ ');
+    const pathSafe = sanitizePathForDisplay(this.path, this.isWin);
+    const pathForPrompt = this.isWin ? pathSafe.replace(/\//g, '\\') : pathSafe;
+    const pathEsc = antSword.noxssTerminal(pathForPrompt, false);
+    if (this.isWin) {
+      return `[[b;white;]${pathEsc}> ]`;
+    }
+    if (user) {
+      const userEsc = antSword.noxssTerminal(sanitizePlainInfo(user, 256), false);
+      return `([[b;#E80000;]${userEsc}]:[[;#0F93D2;]${pathEsc}]) $ `;
+    }
+    return `[[;0F93D2;]${pathEsc}]) $ `;
   }
 
 }

@@ -254,7 +254,7 @@ module.exports = {
  Ctrl K\t\t刪除到文本末尾
  Ctrl T\t\t交換光標處文本
 `,
-      ascmd: (cmd) => antSword.noxss(`將使用 ${cmd} 執行命令.`),
+      ascmd: (cmd) => antSword.noxssTerminal(`將使用 ${cmd} 執行命令.`),
       aspowershell: {
         on: "已啟用Powershell模式",
         off: "已關閉Powershell模式"

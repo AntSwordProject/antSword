@@ -255,7 +255,7 @@ Hot Keys:
  Ctrl K\t\tDelete to the end of the text
  Ctrl T\t\tExchange text at the cursor
  `,
-      ascmd: (cmd) => antSword.noxss(`Will execute the command with ${cmd}.`),
+      ascmd: (cmd) => antSword.noxssTerminal(`Will execute the command with ${cmd}.`),
       aspowershell: {
         on: "Powershell mode enabled",
         off: "Powershell mode disabled"
