@@ -1,4 +1,4 @@
-# 中国蚁剑 [![release](https://img.shields.io/badge/release-v2.1.15-blue.svg?style=flat-square)][url-release]
+# 中国蚁剑 [![release](https://img.shields.io/badge/release-v2.1.16-blue.svg?style=flat-square)][url-release]
 
 > 一剑在手，纵横无忧！
 
