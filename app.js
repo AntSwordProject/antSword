@@ -76,7 +76,7 @@ app.once('ready', () => {
       if (process.platform == 'darwin') {
         // app.hide();
         app.exit(0);
-      } else if (process.platform == 'linux') {
+      } else if (process.platform == 'linux') { app.exit(0);
         return;
       } else {
         mainWindow.hide();
