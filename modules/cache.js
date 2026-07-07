@@ -22,6 +22,7 @@ class Cache {
    */
   constructor(electron) {
     logger = new electron.Logger('Cache');
+    this._dbCache = {};
     electron
       .ipcMain
       .on('cache-add', this.addCache.bind(this))
@@ -33,15 +34,18 @@ class Cache {
   }
 
   /**
-   * 创建nedb数据库文件
+   * 创建nedb数据库文件（缓存实例以避免文件句柄泄漏）
    * @param  {String} id 数据存储文件名
    * @return {[type]}    [description]
    */
   createDB(id = String(+new Date)) {
-    return new Datastore({
-      filename: path.join(CONF.cachePath, id),
-      autoload: true
-    });
+    if (!this._dbCache[id]) {
+      this._dbCache[id] = new Datastore({
+        filename: path.join(CONF.cachePath, id),
+        autoload: true
+      });
+    }
+    return this._dbCache[id];
   }
 
   /**
@@ -125,6 +129,7 @@ class Cache {
     logger.fatal('clearCache', opts);
     try {
       fs.unlinkSync(path.join(CONF.cachePath, opts['id']));
+      delete this._dbCache[opts['id']];
       event.returnValue = true;
     } catch (e) {
       event.returnValue = e;
@@ -145,6 +150,7 @@ class Cache {
         .map((_) => {
           fs.unlinkSync(path.join(CONF.cachePath, _));
         });
+      this._dbCache = {};
       event.returnValue = true;
     } catch (e) {
       event.returnValue = e;
