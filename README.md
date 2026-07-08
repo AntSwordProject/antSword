@@ -74,3 +74,12 @@ antSword has joined 404Team [404StarLink 2.0 - Galaxy](https://github.com/knowns
 [url-terminal]: https://cdn.nlark.com/yuque/0/2021/png/1592179/1611823538382-50fba630-3bd9-4205-b5dd-9cc054da79a8.png
 [url-database]: https://cdn.nlark.com/yuque/0/2021/png/1592179/1611825612518-ca1c4fcc-98a6-4fa3-b55d-f25619c86380.png
 [url-pluginstore]: https://cdn.nlark.com/yuque/0/2021/png/1592179/1611907520850-040bffb1-5bc3-4c1c-a8d1-1e69712f7684.png
+
+
+## Known Issues and Workarounds
+
+The maintainers are aware of the following issues:
+
+- Issue mentioned in the bug tracker
+- Users should follow the recommended practices
+- See the documentation for more details
