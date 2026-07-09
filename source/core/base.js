@@ -426,6 +426,7 @@ class Base {
           tag_s: opt['tag_s'],
           tag_e: opt['tag_e'],
           encode: this.__opts__['encode'],
+          decoderPath: antSword['decoders'][this.__opts__['type']]?.[this.__opts__['decoder'] || 'default'],
           ignoreHTTPS: (this.__opts__['otherConf'] || {})['ignore-https'] === 1,
           useChunk: (this.__opts__['otherConf'] || {})['use-chunk'] === 1,
           chunkStepMin: (this.__opts__['otherConf'] || {})['chunk-step-byte-min'] || 2,

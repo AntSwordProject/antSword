@@ -379,6 +379,16 @@ class Request {
     if (opts['url'].match(CONF.urlblacklist)) {
       return event.sender.send('request-error-' + opts['hash'], "Blacklist URL");
     }
+    // 加载解码器
+    let decoder = null;
+    if (opts['decoderPath']) {
+      try {
+        delete require.cache[require.resolve(opts['decoderPath'])];
+        decoder = require(opts['decoderPath']);
+      } catch (e) {
+        logger.error('Failed to load decoder:', e);
+      }
+    }
     // 创建文件流
     const rs = fs.createWriteStream(opts['path']);
 
@@ -410,9 +420,18 @@ class Request {
         if (!ret) {
           return event.sender.send('download-error-' + opts['hash'], err);
         }
-        rs.write(ret);
+        // 应用解码器
+        let finalData = ret;
+        if (decoder && typeof decoder.decode_buff === 'function') {
+          try {
+            finalData = decoder.decode_buff(ret);
+          } catch (e) {
+            logger.error('Decoder error:', e);
+          }
+        }
+        rs.write(finalData);
         rs.close();
-        event.sender.send('download-' + opts['hash'], ret.length);
+        event.sender.send('download-' + opts['hash'], finalData.length);
       });
       return;
     };
@@ -461,6 +480,14 @@ class Request {
             indexStart = tempDataBuffer.indexOf(opts['tag_s']) || 0;
             // 截取最后的数据
             let finalData = Buffer.from(tempDataBuffer.slice(indexStart + opts['tag_s'].length, indexEnd), 'binary');
+            // 应用解码器
+            if (decoder && typeof decoder.decode_buff === 'function') {
+              try {
+                finalData = decoder.decode_buff(finalData);
+              } catch (e) {
+                logger.error('Decoder error:', e);
+              }
+            }
             // 写入文件流&&关闭
             rs.write(finalData);
             rs.close();
@@ -506,6 +533,14 @@ class Request {
           indexStart = tempDataBuffer.indexOf(opts['tag_s']) || 0;
           // 截取最后的数据
           let finalData = Buffer.from(tempDataBuffer.slice(indexStart + opts['tag_s'].length, indexEnd), 'binary');
+          // 应用解码器
+          if (decoder && typeof decoder.decode_buff === 'function') {
+            try {
+              finalData = decoder.decode_buff(finalData);
+            } catch (e) {
+              logger.error('Decoder error:', e);
+            }
+          }
           // 写入文件流&&关闭
           rs.write(finalData);
           rs.close();
