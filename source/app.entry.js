@@ -57,17 +57,19 @@ const antSword = window.antSword = {
   },
   /**
    * 终端输出安全：先 noxss，再消除 jQuery Terminal 格式码（[[...]] / ! 链接等），
-   * 防止不可信文本触发伪链接或扩展指令导致 RCE（须先加载 jquery.terminal）。
+   * 防止不可信文本触发伪链接或扩展指令导致 RCE（Fix #370）。
    * @param  {String}  html  原始字符串
    * @param  {Boolean} wrap  是否把换行转为 &lt;br/&gt;
    * @return {String}        可安全传入 term.echo 的字符串
    */
   noxssTerminal: (html = '', wrap = true) => {
     let s = antSword.noxss(html, wrap);
-    if (typeof $ !== 'undefined' && $.terminal && $.terminal.escape_brackets) {
-      return $.terminal.escape_brackets(s);
-    }
-    return s.replace(/\[/g, '\uFF3B').replace(/\]/g, '\uFF3D');
+    // Always escape brackets to prevent jQuery Terminal format code injection
+    // This fixes #370: noxss() filtering incomplete allowing XSS→RCE
+    s = s.replace(/\[/g, '\uFF3B').replace(/\]/g, '\uFF3D');
+    // Escape ! prefix used for links in jQuery Terminal (e.g., !url)
+    s = s.replace(/!([a-zA-Z])/g, '\uFF01$1');
+    return s;
   },
   /**
    * 终端日志数据
